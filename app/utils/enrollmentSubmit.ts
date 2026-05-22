@@ -34,10 +34,33 @@ export type EnrollmentResponse = {
 };
 
 export type EnrollmentErrorResponse = {
-  code: string;
+  code: "COURSE_FULL" | "DUPLICATE_ENROLLMENT" | "INVALID_INPUT";
   message: string;
   details?: Record<string, string>;
 };
+
+export function isEnrollmentErrorResponse(
+  value: unknown,
+): value is EnrollmentErrorResponse {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  return "code" in value && "message" in value;
+}
+
+export function createEnrollmentSubmitError(
+  value: unknown,
+): EnrollmentErrorResponse {
+  if (isEnrollmentErrorResponse(value)) {
+    return value;
+  }
+
+  return {
+    code: "INVALID_INPUT",
+    message: "수강 신청 제출에 실패했습니다. 다시 시도해 주세요.",
+  };
+}
 
 export function createEnrollmentPayload({
   agreedToTerms,

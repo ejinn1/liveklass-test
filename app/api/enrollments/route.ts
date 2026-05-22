@@ -1,4 +1,5 @@
 import { mockCourses } from "@/app/mocks/courses/data";
+import type { EnrollmentErrorResponse } from "@/app/utils/enrollmentSubmit";
 
 type EnrollmentRequest = {
   courseId?: string;
@@ -19,7 +20,7 @@ type EnrollmentRequest = {
 };
 
 function createErrorResponse(
-  code: string,
+  code: EnrollmentErrorResponse["code"],
   message: string,
   status: number,
   details?: Record<string, string>,
@@ -34,6 +35,14 @@ function createErrorResponse(
       status,
     },
   );
+}
+
+function getRequestedSeatCount(body: EnrollmentRequest) {
+  if (body.type === "group") {
+    return body.group?.headCount ?? 0;
+  }
+
+  return 1;
 }
 
 export async function POST(request: Request) {
@@ -51,10 +60,6 @@ export async function POST(request: Request) {
         courseId: "존재하지 않는 강의입니다.",
       },
     );
-  }
-
-  if (course.currentEnrollment >= course.maxCapacity) {
-    return createErrorResponse("COURSE_FULL", "정원이 마감된 강의입니다.", 409);
   }
 
   if (!body.agreedToTerms) {
@@ -82,6 +87,20 @@ export async function POST(request: Request) {
       "INVALID_INPUT",
       "단체 신청 정보를 입력해 주세요.",
       400,
+    );
+  }
+
+  const remainingSeats = course.maxCapacity - course.currentEnrollment;
+  const requestedSeatCount = getRequestedSeatCount(body);
+
+  if (remainingSeats < requestedSeatCount) {
+    return createErrorResponse(
+      "COURSE_FULL",
+      "잔여 좌석보다 신청 인원이 많습니다.",
+      409,
+      {
+        headCount: `현재 신청 가능한 잔여 좌석은 ${remainingSeats}명입니다.`,
+      },
     );
   }
 
