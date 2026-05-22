@@ -119,7 +119,9 @@ export default function ApplicantPage() {
   const handleValidSubmit = () => {
     router.push("/review");
   };
-  
+  const handlePreviousClick = () => {
+    router.push("/");
+  };
   const groupErrors = errors as FieldErrors<GroupApplicantStepFormValues>;
 
   return (
@@ -157,7 +159,7 @@ export default function ApplicantPage() {
       <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
         <button
           type="button"
-          onClick={() => router.push("/")}
+          onClick={handlePreviousClick}
           className="h-12 rounded-md border border-zinc-300 px-5 text-sm font-semibold text-zinc-700 transition hover:border-zinc-500"
         >
           이전 단계

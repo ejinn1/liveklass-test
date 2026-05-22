@@ -1,3 +1,4 @@
+import type { ChangeEvent } from "react";
 import type {
   FieldErrors,
   UseFormRegister,
@@ -25,6 +26,22 @@ export function GroupFields({
   register,
   setValue,
 }: GroupFieldsProps) {
+  const handleHeadCountChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const headCount = Math.min(
+      Math.max(Number(event.target.value) || 2, 2),
+      10,
+    );
+
+    setValue(
+      "group.participants",
+      syncParticipantsWithHeadCount(group.participants, headCount),
+      {
+        shouldDirty: true,
+        shouldValidate: true,
+      },
+    );
+  };
+
   return (
     <fieldset className="space-y-5 rounded-lg border border-zinc-200 bg-white p-5">
       <div>
@@ -58,21 +75,7 @@ export function GroupFields({
           max={10}
           {...register("group.headCount", {
             valueAsNumber: true,
-            onChange: (event) => {
-              const headCount = Math.min(
-                Math.max(Number(event.target.value) || 2, 2),
-                10,
-              );
-
-              setValue(
-                "group.participants",
-                syncParticipantsWithHeadCount(group.participants, headCount),
-                {
-                  shouldDirty: true,
-                  shouldValidate: true,
-                },
-              );
-            },
+            onChange: handleHeadCountChange,
           })}
           className="h-11 rounded-md border border-zinc-300 px-3 text-sm transition outline-none focus:border-zinc-950"
         />

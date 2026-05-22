@@ -15,12 +15,15 @@ type CourseCardProps = {
 
 export function CourseCard({ course, selected, onSelect }: CourseCardProps) {
   const status = getCourseStatus(course);
+  const handleSelect = () => {
+    onSelect(course);
+  };
 
   return (
     <button
       type="button"
       disabled={!status.selectable}
-      onClick={() => onSelect(course)}
+      onClick={handleSelect}
       className={cn(
         "grid min-h-64 w-full grid-rows-[auto_1fr_auto] rounded-lg border bg-white p-5 text-left shadow-sm transition",
         selected
