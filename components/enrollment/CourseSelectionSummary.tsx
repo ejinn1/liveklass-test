@@ -13,6 +13,7 @@ type CourseSelectionSummaryProps = {
   enrollmentType: EnrollmentType | null;
   canContinue: boolean;
   onEnrollmentTypeChange: (type: EnrollmentType) => void;
+  onContinue: () => void;
 };
 
 export function CourseSelectionSummary({
@@ -20,6 +21,7 @@ export function CourseSelectionSummary({
   enrollmentType,
   canContinue,
   onEnrollmentTypeChange,
+  onContinue,
 }: CourseSelectionSummaryProps) {
   const selectedCourseStatus = selectedCourse
     ? getCourseStatus(selectedCourse)
@@ -95,6 +97,7 @@ export function CourseSelectionSummary({
         <button
           type="button"
           disabled={!canContinue}
+          onClick={onContinue}
           className={cn(
             "mt-6 h-12 w-full rounded-md text-sm font-semibold transition",
             canContinue

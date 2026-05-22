@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { useEnrollmentFormStore } from "@/app/stores/enrollmentFormStore";
@@ -14,6 +15,8 @@ import { mockCourseCategories, mockCourses } from "./mocks/courses/data";
 import type { CourseCategory } from "./types/course";
 
 export default function Home() {
+  const router = useRouter();
+
   const [selectedCategory, setSelectedCategory] = useState<
     CourseCategory | undefined
   >(undefined);
@@ -43,6 +46,14 @@ export default function Home() {
   const handleCategoryChange = (category?: CourseCategory) => {
     setSelectedCategory(category);
     setSelectedCourseId(null);
+  };
+
+  const handleContinue = () => {
+    if (!canContinue) {
+      return;
+    }
+
+    router.push("/applicant");
   };
 
   useEffect(() => {
@@ -132,6 +143,7 @@ export default function Home() {
           enrollmentType={enrollmentType}
           canContinue={canContinue}
           onEnrollmentTypeChange={setEnrollmentType}
+          onContinue={handleContinue}
         />
       </div>
     </section>
