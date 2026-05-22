@@ -32,6 +32,7 @@ export type EnrollmentStepActions = {
 export type EnrollmentStepStore = EnrollmentStepState & EnrollmentStepActions;
 
 export type EnrollmentFormState = {
+  hasHydrated: boolean;
   selectedCourseId: string | null;
   enrollmentType: EnrollmentType | null;
   applicant: ApplicantInput;
@@ -39,6 +40,7 @@ export type EnrollmentFormState = {
 };
 
 export type EnrollmentFormActions = {
+  setHasHydrated: (hasHydrated: boolean) => void;
   setSelectedCourseId: (courseId: string | null) => void;
   setEnrollmentType: (enrollmentType: EnrollmentType | null) => void;
   setCourseSelection: (

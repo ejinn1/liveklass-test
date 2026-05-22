@@ -1,8 +1,15 @@
 "use client";
 
-import { useEffect } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { useEffect, useRef } from "react";
+import { useForm, useWatch, type FieldErrors } from "react-hook-form";
 
+import {
+  applicantStepSchema,
+  type ApplicantStepFormValues,
+  type GroupApplicantStepFormValues,
+} from "@/app/schemas/enrollment";
 import { useEnrollmentFormStore } from "@/app/stores/enrollmentFormStore";
 import { useEnrollmentStepStore } from "@/app/stores/enrollmentStepStore";
 import { cn } from "@/app/utils/cn";
@@ -12,15 +19,50 @@ import { StepIndicator } from "@/components/enrollment/StepIndicator";
 
 export default function ApplicantPage() {
   const router = useRouter();
+  const initializedFormRef = useRef(false);
+
   const { currentStep, goToStep } = useEnrollmentStepStore();
   const {
     applicant,
     enrollmentType,
     group,
+    hasHydrated,
     selectedCourseId,
     setApplicant,
     setGroup,
   } = useEnrollmentFormStore();
+
+  const {
+    control,
+    formState: { errors },
+    handleSubmit,
+    register,
+    reset,
+    setValue,
+  } = useForm<ApplicantStepFormValues>({
+    defaultValues:
+      enrollmentType === "group"
+        ? {
+            enrollmentType,
+            applicant,
+            group,
+          }
+        : {
+            enrollmentType: "personal",
+            applicant,
+          },
+    mode: "onBlur",
+    resolver: zodResolver(applicantStepSchema),
+  });
+
+  const watchedApplicant = useWatch({
+    control,
+    name: "applicant",
+  });
+  const watchedGroup = useWatch({
+    control,
+    name: "group",
+  });
 
   useEffect(() => {
     goToStep(2);
@@ -32,12 +74,59 @@ export default function ApplicantPage() {
     }
   }, [enrollmentType, router, selectedCourseId]);
 
-  if (!selectedCourseId || !enrollmentType) {
+  useEffect(() => {
+    if (!hasHydrated || !enrollmentType) {
+      return;
+    }
+
+    if (initializedFormRef.current) {
+      return;
+    }
+
+    reset(
+      enrollmentType === "group"
+        ? {
+            enrollmentType,
+            applicant,
+            group,
+          }
+        : {
+            enrollmentType,
+            applicant,
+          },
+    );
+    initializedFormRef.current = true;
+  }, [applicant, enrollmentType, group, hasHydrated, reset]);
+
+  useEffect(() => {
+    if (!hasHydrated) {
+      return;
+    }
+
+    setApplicant(watchedApplicant);
+  }, [hasHydrated, setApplicant, watchedApplicant]);
+
+  useEffect(() => {
+    if (hasHydrated && enrollmentType === "group" && watchedGroup) {
+      setGroup(watchedGroup);
+    }
+  }, [enrollmentType, hasHydrated, setGroup, watchedGroup]);
+
+  if (!hasHydrated || !selectedCourseId || !enrollmentType) {
     return null;
   }
 
+  const handleValidSubmit = () => {
+    router.push("/review");
+  };
+  
+  const groupErrors = errors as FieldErrors<GroupApplicantStepFormValues>;
+
   return (
-    <section className="mx-auto flex w-full max-w-4xl flex-1 flex-col px-5 py-8 sm:px-8 lg:px-10">
+    <form
+      onSubmit={handleSubmit(handleValidSubmit)}
+      className="mx-auto flex w-full max-w-4xl flex-1 flex-col px-5 py-8 sm:px-8 lg:px-10"
+    >
       <div className="mb-8 flex flex-col gap-4 border-b border-zinc-200 pb-6">
         <div>
           <p className="text-sm font-semibold text-zinc-500">Step 2</p>
@@ -53,10 +142,15 @@ export default function ApplicantPage() {
       </div>
 
       <div className="space-y-5">
-        <ApplicantFields applicant={applicant} onChange={setApplicant} />
+        <ApplicantFields errors={errors} register={register} />
 
         {enrollmentType === "group" ? (
-          <GroupFields group={group} onChange={setGroup} />
+          <GroupFields
+            errors={groupErrors}
+            group={watchedGroup ?? group}
+            register={register}
+            setValue={setValue}
+          />
         ) : null}
       </div>
 
@@ -70,16 +164,15 @@ export default function ApplicantPage() {
         </button>
 
         <button
-          type="button"
+          type="submit"
           className={cn(
             "h-12 rounded-md px-5 text-sm font-semibold transition",
-            "cursor-not-allowed bg-zinc-200 text-zinc-500",
+            "bg-zinc-950 text-white hover:bg-zinc-800",
           )}
-          disabled
         >
           다음 단계
         </button>
       </div>
-    </section>
+    </form>
   );
 }

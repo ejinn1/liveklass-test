@@ -24,6 +24,7 @@ const initialGroup: GroupInput = {
 };
 
 const initialEnrollmentFormState: EnrollmentFormState = {
+  hasHydrated: false,
   selectedCourseId: null,
   enrollmentType: null,
   applicant: initialApplicant,
@@ -34,6 +35,10 @@ export const useEnrollmentFormStore = create<EnrollmentFormStore>()(
   persist(
     (set) => ({
       ...initialEnrollmentFormState,
+      setHasHydrated: (hasHydrated) =>
+        set({
+          hasHydrated,
+        }),
       setSelectedCourseId: (courseId) =>
         set({
           selectedCourseId: courseId,
@@ -64,11 +69,21 @@ export const useEnrollmentFormStore = create<EnrollmentFormStore>()(
       resetEnrollmentForm: () =>
         set({
           ...initialEnrollmentFormState,
+          hasHydrated: true,
         }),
     }),
     {
       name: "liveklass-enrollment-form",
+      partialize: (state) => ({
+        selectedCourseId: state.selectedCourseId,
+        enrollmentType: state.enrollmentType,
+        applicant: state.applicant,
+        group: state.group,
+      }),
       storage: createJSONStorage(() => localStorage),
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
     },
   ),
 );
