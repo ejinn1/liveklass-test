@@ -2,7 +2,7 @@ import type {
   ApplicantInput,
   EnrollmentType,
   GroupInput,
-} from "@/app/types/enrollment";
+} from "@/types/enrollment";
 
 type CreateEnrollmentPayloadParams = {
   agreedToTerms: boolean;

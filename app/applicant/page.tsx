@@ -9,10 +9,10 @@ import {
   applicantStepSchema,
   type ApplicantStepFormValues,
   type GroupApplicantStepFormValues,
-} from "@/app/schemas/enrollment";
-import { useEnrollmentFormStore } from "@/app/stores/enrollmentFormStore";
-import { useEnrollmentStepStore } from "@/app/stores/enrollmentStepStore";
-import { cn } from "@/app/utils/cn";
+} from "@/schemas/enrollment";
+import { useEnrollmentFormStore } from "@/stores/enrollmentFormStore";
+import { useEnrollmentStepStore } from "@/stores/enrollmentStepStore";
+import { cn } from "@/utils/cn";
 import { ApplicantFields } from "@/components/enrollment/ApplicantFields";
 import { GroupFields } from "@/components/enrollment/GroupFields";
 import { StepIndicator } from "@/components/enrollment/StepIndicator";

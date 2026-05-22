@@ -1,5 +1,5 @@
-import { mockCourseCategories, mockCourses } from "@/app/mocks/courses/data";
-import { courseCategories, type CourseCategory } from "@/app/types/course";
+import { mockCourseCategories, mockCourses } from "@/mocks/courses/data";
+import { courseCategories, type CourseCategory } from "@/types/course";
 
 function isCourseCategory(value: string): value is CourseCategory {
   return courseCategories.includes(value as CourseCategory);

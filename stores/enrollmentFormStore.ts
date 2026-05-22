@@ -6,8 +6,8 @@ import type {
   EnrollmentFormState,
   EnrollmentFormStore,
   GroupInput,
-} from "@/app/types/enrollment";
-import { syncParticipantsWithHeadCount } from "@/app/utils/enrollmentForm";
+} from "@/types/enrollment";
+import { syncParticipantsWithHeadCount } from "@/utils/enrollmentForm";
 
 const initialApplicant: ApplicantInput = {
   name: "",

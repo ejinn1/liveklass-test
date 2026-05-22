@@ -1,5 +1,5 @@
-import { mockCourses } from "@/app/mocks/courses/data";
-import type { EnrollmentErrorResponse } from "@/app/utils/enrollmentSubmit";
+import { mockCourses } from "@/mocks/courses/data";
+import type { EnrollmentErrorResponse } from "@/utils/enrollmentSubmit";
 
 type EnrollmentRequest = {
   courseId?: string;

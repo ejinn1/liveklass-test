@@ -1,5 +1,5 @@
-import { cn } from "@/app/utils/cn";
-import type { EnrollmentStep } from "@/app/types/enrollment";
+import { cn } from "@/utils/cn";
+import type { EnrollmentStep } from "@/types/enrollment";
 
 const steps: Array<{ step: EnrollmentStep; label: string }> = [
   { step: 1, label: "강의 선택" },

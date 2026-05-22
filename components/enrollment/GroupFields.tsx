@@ -8,9 +8,9 @@ import type {
 import type {
   ApplicantStepFormValues,
   GroupApplicantStepFormValues,
-} from "@/app/schemas/enrollment";
-import type { GroupInput } from "@/app/types/enrollment";
-import { syncParticipantsWithHeadCount } from "@/app/utils/enrollmentForm";
+} from "@/schemas/enrollment";
+import type { GroupInput } from "@/types/enrollment";
+import { syncParticipantsWithHeadCount } from "@/utils/enrollmentForm";
 import { ParticipantFields } from "@/components/enrollment/ParticipantFields";
 
 type GroupFieldsProps = {

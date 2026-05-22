@@ -1,4 +1,4 @@
-import type { Course } from "@/app/types/course";
+import type { Course } from "@/types/course";
 
 export function formatPrice(price: number) {
   return new Intl.NumberFormat("ko-KR", {

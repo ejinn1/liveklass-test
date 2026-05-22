@@ -1,6 +1,6 @@
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
 
-import type { ApplicantStepFormValues } from "@/app/schemas/enrollment";
+import type { ApplicantStepFormValues } from "@/schemas/enrollment";
 
 type ApplicantFieldsProps = {
   errors: FieldErrors<ApplicantStepFormValues>;

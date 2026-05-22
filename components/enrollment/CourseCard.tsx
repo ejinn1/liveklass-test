@@ -1,11 +1,7 @@
-import { categoryLabels } from "@/app/constants/course";
-import type { Course } from "@/app/types/course";
-import { cn } from "@/app/utils/cn";
-import {
-  formatDateRange,
-  formatPrice,
-  getCourseStatus,
-} from "@/app/utils/course";
+import { categoryLabels } from "@/constants/course";
+import type { Course } from "@/types/course";
+import { cn } from "@/utils/cn";
+import { formatDateRange, formatPrice, getCourseStatus } from "@/utils/course";
 
 type CourseCardProps = {
   course: Course;

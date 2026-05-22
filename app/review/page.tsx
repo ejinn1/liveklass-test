@@ -6,16 +6,16 @@ import { useRouter } from "next/navigation";
 import type {
   EnrollmentErrorResponse,
   EnrollmentResponse,
-} from "@/app/utils/enrollmentSubmit";
-import { useEnrollmentFormStore } from "@/app/stores/enrollmentFormStore";
-import { useEnrollmentStepStore } from "@/app/stores/enrollmentStepStore";
-import { formatDateRange, formatPrice } from "@/app/utils/course";
+} from "@/utils/enrollmentSubmit";
+import { useEnrollmentFormStore } from "@/stores/enrollmentFormStore";
+import { useEnrollmentStepStore } from "@/stores/enrollmentStepStore";
+import { formatDateRange, formatPrice } from "@/utils/course";
 import {
   createEnrollmentPayload,
   createEnrollmentSubmitError,
-} from "@/app/utils/enrollmentSubmit";
-import { mockCourses } from "@/app/mocks/courses/data";
-import { enrollmentTypeLabels } from "@/app/constants/enrollment";
+} from "@/utils/enrollmentSubmit";
+import { mockCourses } from "@/mocks/courses/data";
+import { enrollmentTypeLabels } from "@/constants/enrollment";
 import { StepIndicator } from "@/components/enrollment/StepIndicator";
 
 export default function ReviewPage() {

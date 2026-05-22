@@ -3,7 +3,7 @@ import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import type {
   ApplicantStepFormValues,
   GroupApplicantStepFormValues,
-} from "@/app/schemas/enrollment";
+} from "@/schemas/enrollment";
 
 type ParticipantFieldsProps = {
   errors: FieldErrors<GroupApplicantStepFormValues>;

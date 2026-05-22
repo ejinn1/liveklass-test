@@ -1,4 +1,4 @@
-import type { CourseCategory } from "@/app/types/course";
+import type { CourseCategory } from "@/types/course";
 
 export const categoryLabels: Record<CourseCategory, string> = {
   development: "개발",

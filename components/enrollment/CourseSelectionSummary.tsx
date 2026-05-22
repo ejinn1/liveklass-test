@@ -1,12 +1,8 @@
-import { enrollmentTypes } from "@/app/constants/enrollment";
-import type { Course } from "@/app/types/course";
-import type { EnrollmentType } from "@/app/types/enrollment";
-import { cn } from "@/app/utils/cn";
-import {
-  formatDateRange,
-  formatPrice,
-  getCourseStatus,
-} from "@/app/utils/course";
+import { enrollmentTypes } from "@/constants/enrollment";
+import type { Course } from "@/types/course";
+import type { EnrollmentType } from "@/types/enrollment";
+import { cn } from "@/utils/cn";
+import { formatDateRange, formatPrice, getCourseStatus } from "@/utils/course";
 import { EnrollmentTypeButton } from "@/components/enrollment/EnrollmentTypeButton";
 
 type CourseSelectionSummaryProps = {

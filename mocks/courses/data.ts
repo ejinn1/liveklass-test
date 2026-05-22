@@ -1,4 +1,4 @@
-import { courseCategories, type Course } from "@/app/types/course";
+import { courseCategories, type Course } from "@/types/course";
 
 export const mockCourses: Course[] = [
   {

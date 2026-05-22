@@ -1,4 +1,4 @@
-import type { EnrollmentType } from "@/app/types/enrollment";
+import type { EnrollmentType } from "@/types/enrollment";
 
 export const enrollmentTypes = ["personal", "group"] as const;
 

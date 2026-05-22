@@ -1,6 +1,6 @@
-import { enrollmentTypeLabels } from "@/app/constants/enrollment";
-import type { EnrollmentType } from "@/app/types/enrollment";
-import { cn } from "@/app/utils/cn";
+import { enrollmentTypeLabels } from "@/constants/enrollment";
+import type { EnrollmentType } from "@/types/enrollment";
+import { cn } from "@/utils/cn";
 
 type EnrollmentTypeButtonProps = {
   selected: boolean;

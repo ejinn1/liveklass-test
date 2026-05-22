@@ -1,4 +1,4 @@
-import type { ParticipantInput } from "@/app/types/enrollment";
+import type { ParticipantInput } from "@/types/enrollment";
 
 export function createEmptyParticipant(): ParticipantInput {
   return {
