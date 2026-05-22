@@ -21,23 +21,33 @@ export type GroupInput = {
   contactPerson: string;
 };
 
-export type EnrollmentState = {
+export type EnrollmentStepState = {
   currentStep: EnrollmentStep;
+};
+
+export type EnrollmentStepActions = {
+  goToStep: (step: EnrollmentStep) => void;
+};
+
+export type EnrollmentStepStore = EnrollmentStepState & EnrollmentStepActions;
+
+export type EnrollmentFormState = {
   selectedCourseId: string | null;
   enrollmentType: EnrollmentType | null;
   applicant: ApplicantInput;
   group: GroupInput;
 };
 
-export type EnrollmentActions = {
+export type EnrollmentFormActions = {
+  setSelectedCourseId: (courseId: string | null) => void;
+  setEnrollmentType: (enrollmentType: EnrollmentType | null) => void;
   setCourseSelection: (
     courseId: string,
     enrollmentType: EnrollmentType,
   ) => void;
   setApplicant: (applicant: Partial<ApplicantInput>) => void;
   setGroup: (group: Partial<GroupInput>) => void;
-  goToStep: (step: EnrollmentStep) => void;
-  resetEnrollment: () => void;
+  resetEnrollmentForm: () => void;
 };
 
-export type EnrollmentStore = EnrollmentState & EnrollmentActions;
+export type EnrollmentFormStore = EnrollmentFormState & EnrollmentFormActions;
