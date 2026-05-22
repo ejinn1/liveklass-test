@@ -1,18 +1,19 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { type MouseEvent, useEffect, useState } from "react";
 
-import { useEnrollmentFormStore } from "@/app/stores/enrollmentFormStore";
-import { useEnrollmentStepStore } from "@/app/stores/enrollmentStepStore";
-import { cn } from "@/app/utils/cn";
-import { getCourseStatus } from "@/app/utils/course";
+import { categoryLabels } from "@/constants/course";
+import { courseListQueryOptions } from "@/remotes/courses/query";
+import { useEnrollmentFormStore } from "@/stores/enrollmentFormStore";
+import { useEnrollmentStepStore } from "@/stores/enrollmentStepStore";
+import type { Course, CourseCategory } from "@/types/course";
+import { cn } from "@/utils/cn";
+import { getCourseStatus } from "@/utils/course";
 import { CourseCard } from "@/components/enrollment/CourseCard";
 import { CourseSelectionSummary } from "@/components/enrollment/CourseSelectionSummary";
 import { StepIndicator } from "@/components/enrollment/StepIndicator";
-import { categoryLabels } from "./constants/course";
-import { mockCourseCategories, mockCourses } from "./mocks/courses/data";
-import type { CourseCategory } from "./types/course";
 
 export default function Home() {
   const router = useRouter();
@@ -28,11 +29,16 @@ export default function Home() {
     setSelectedCourseId,
   } = useEnrollmentFormStore();
 
-  const courses = selectedCategory
-    ? mockCourses.filter((course) => course.category === selectedCategory)
-    : mockCourses;
+  const {
+    data: courseList,
+    isError: isCourseListError,
+    isPending: isCourseListPending,
+    refetch: refetchCourseList,
+  } = useQuery(courseListQueryOptions(selectedCategory));
+  const courses = courseList?.courses ?? [];
+  const categories = courseList?.categories ?? [];
   const selectedCourse =
-    mockCourses.find((course) => course.id === selectedCourseId) ?? null;
+    courses.find((course) => course.id === selectedCourseId) ?? null;
 
   const selectedCourseStatus = selectedCourse
     ? getCourseStatus(selectedCourse)
@@ -46,6 +52,20 @@ export default function Home() {
   const handleCategoryChange = (category?: CourseCategory) => {
     setSelectedCategory(category);
     setSelectedCourseId(null);
+  };
+  const handleAllCategoryClick = () => {
+    handleCategoryChange(undefined);
+  };
+  const handleCategoryClick = (event: MouseEvent<HTMLButtonElement>) => {
+    handleCategoryChange(
+      event.currentTarget.dataset.category as CourseCategory,
+    );
+  };
+  const handleCourseSelect = (course: Course) => {
+    setSelectedCourseId(course.id);
+  };
+  const handleCourseListRetry = () => {
+    void refetchCourseList();
   };
 
   const handleContinue = () => {
@@ -86,7 +106,7 @@ export default function Home() {
       <div className="mb-6 flex flex-wrap gap-2">
         <button
           type="button"
-          onClick={() => handleCategoryChange(undefined)}
+          onClick={handleAllCategoryClick}
           className={cn(
             "h-10 rounded-md border px-4 text-sm font-medium transition",
             selectedCategory === undefined
@@ -96,11 +116,12 @@ export default function Home() {
         >
           전체
         </button>
-        {mockCourseCategories.map((category) => (
+        {categories.map((category) => (
           <button
             key={category}
             type="button"
-            onClick={() => handleCategoryChange(category)}
+            data-category={category}
+            onClick={handleCategoryClick}
             className={cn(
               "h-10 rounded-md border px-4 text-sm font-medium transition",
               selectedCategory === category
@@ -115,7 +136,29 @@ export default function Home() {
 
       <div className="grid flex-1 gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
         <div>
-          {courses.length === 0 ? (
+          {isCourseListPending ? (
+            <div className="rounded-lg border border-zinc-200 bg-white p-8 text-center">
+              <h2 className="text-lg font-semibold text-zinc-950">
+                강의 목록을 불러오는 중입니다
+              </h2>
+              <p className="mt-2 text-sm text-zinc-600">
+                잠시 후 목록이 표시됩니다.
+              </p>
+            </div>
+          ) : isCourseListError ? (
+            <div className="rounded-lg border border-red-200 bg-red-50 p-8 text-center">
+              <h2 className="text-lg font-semibold text-red-700">
+                강의 목록을 불러오지 못했습니다
+              </h2>
+              <button
+                type="button"
+                onClick={handleCourseListRetry}
+                className="mt-4 h-10 rounded-md border border-red-300 bg-white px-4 text-sm font-semibold text-red-700 transition hover:border-red-500"
+              >
+                다시 시도
+              </button>
+            </div>
+          ) : courses.length === 0 ? (
             <div className="rounded-lg border border-zinc-200 bg-white p-8 text-center">
               <h2 className="text-lg font-semibold text-zinc-950">
                 표시할 강의가 없습니다
@@ -131,7 +174,7 @@ export default function Home() {
                   key={course.id}
                   course={course}
                   selected={selectedCourse?.id === course.id}
-                  onSelect={(course) => setSelectedCourseId(course.id)}
+                  onSelect={handleCourseSelect}
                 />
               ))}
             </div>
