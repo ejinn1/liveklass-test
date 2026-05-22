@@ -1,11 +1,11 @@
-import { categoryLabels } from "@/app/constants/courseLabels";
-import { Course } from "@/app/types/courses";
+import { categoryLabels } from "@/app/constants/course";
+import type { Course } from "@/app/types/course";
 import { cn } from "@/app/utils/cn";
 import {
   formatDateRange,
   formatPrice,
   getCourseStatus,
-} from "@/app/utils/courses";
+} from "@/app/utils/course";
 
 type CourseCardProps = {
   course: Course;

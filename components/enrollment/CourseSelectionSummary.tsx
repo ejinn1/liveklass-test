@@ -1,11 +1,12 @@
-import { enrollmentTypeLabels } from "@/app/constants/courseLabels";
-import { Course, EnrollmentType } from "@/app/types/courses";
+import { enrollmentTypeLabels } from "@/app/constants/enrollment";
+import type { Course } from "@/app/types/course";
+import type { EnrollmentType } from "@/app/types/enrollment";
 import { cn } from "@/app/utils/cn";
 import {
   formatDateRange,
   formatPrice,
   getCourseStatus,
-} from "@/app/utils/courses";
+} from "@/app/utils/course";
 
 type CourseSelectionSummaryProps = {
   selectedCourse: Course | null;

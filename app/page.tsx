@@ -3,12 +3,13 @@
 import { useState } from "react";
 
 import { cn } from "@/app/utils/cn";
-import { getCourseStatus } from "@/app/utils/courses";
+import { getCourseStatus } from "@/app/utils/course";
 import { CourseCard } from "@/components/enrollment/CourseCard";
 import { CourseSelectionSummary } from "@/components/enrollment/CourseSelectionSummary";
-import { categoryLabels } from "./constants/courseLabels";
+import { categoryLabels } from "./constants/course";
 import { mockCourseCategories, mockCourses } from "./mocks/courses/data";
-import { Course, CourseCategory, EnrollmentType } from "./types/courses";
+import type { Course, CourseCategory } from "./types/course";
+import type { EnrollmentType } from "./types/enrollment";
 
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<

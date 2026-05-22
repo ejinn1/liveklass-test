@@ -24,5 +24,3 @@ export type CourseListResponse = {
   courses: Course[];
   categories: CourseCategory[];
 };
-
-export type EnrollmentType = "personal" | "group";
