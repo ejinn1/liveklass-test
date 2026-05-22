@@ -1,28 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
+import { useEnrollmentFormStore } from "@/app/stores/enrollmentFormStore";
+import { useEnrollmentStepStore } from "@/app/stores/enrollmentStepStore";
 import { cn } from "@/app/utils/cn";
 import { getCourseStatus } from "@/app/utils/course";
 import { CourseCard } from "@/components/enrollment/CourseCard";
 import { CourseSelectionSummary } from "@/components/enrollment/CourseSelectionSummary";
+import { StepIndicator } from "@/components/enrollment/StepIndicator";
 import { categoryLabels } from "./constants/course";
 import { mockCourseCategories, mockCourses } from "./mocks/courses/data";
-import type { Course, CourseCategory } from "./types/course";
-import type { EnrollmentType } from "./types/enrollment";
+import type { CourseCategory } from "./types/course";
 
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<
     CourseCategory | undefined
   >(undefined);
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
-  const [enrollmentType, setEnrollmentType] = useState<EnrollmentType | null>(
-    null,
-  );
+  const { currentStep, goToStep } = useEnrollmentStepStore();
+  const {
+    enrollmentType,
+    selectedCourseId,
+    setEnrollmentType,
+    setSelectedCourseId,
+  } = useEnrollmentFormStore();
 
   const courses = selectedCategory
     ? mockCourses.filter((course) => course.category === selectedCategory)
     : mockCourses;
+  const selectedCourse =
+    mockCourses.find((course) => course.id === selectedCourseId) ?? null;
 
   const selectedCourseStatus = selectedCourse
     ? getCourseStatus(selectedCourse)
@@ -35,8 +42,12 @@ export default function Home() {
 
   const handleCategoryChange = (category?: CourseCategory) => {
     setSelectedCategory(category);
-    setSelectedCourse(null);
+    setSelectedCourseId(null);
   };
+
+  useEffect(() => {
+    goToStep(1);
+  }, [goToStep]);
 
   return (
     <section className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-5 py-8 sm:px-8 lg:px-10">
@@ -53,8 +64,12 @@ export default function Home() {
         </div>
 
         <div className="flex h-10 items-center rounded-full bg-zinc-100 px-3 text-sm font-medium text-zinc-600">
-          1 / 3
+          {currentStep} / 3
         </div>
+      </div>
+
+      <div className="mb-6">
+        <StepIndicator currentStep={currentStep} />
       </div>
 
       <div className="mb-6 flex flex-wrap gap-2">
@@ -105,7 +120,7 @@ export default function Home() {
                   key={course.id}
                   course={course}
                   selected={selectedCourse?.id === course.id}
-                  onSelect={setSelectedCourse}
+                  onSelect={(course) => setSelectedCourseId(course.id)}
                 />
               ))}
             </div>
