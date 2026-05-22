@@ -3,8 +3,8 @@ import { createJSONStorage, persist } from "zustand/middleware";
 
 import type {
   ApplicantInput,
-  EnrollmentState,
-  EnrollmentStore,
+  EnrollmentFormState,
+  EnrollmentFormStore,
   GroupInput,
   ParticipantInput,
 } from "@/app/types/enrollment";
@@ -30,18 +30,25 @@ const initialGroup: GroupInput = {
   contactPerson: "",
 };
 
-const initialEnrollmentState: EnrollmentState = {
-  currentStep: 1,
+const initialEnrollmentFormState: EnrollmentFormState = {
   selectedCourseId: null,
   enrollmentType: null,
   applicant: initialApplicant,
   group: initialGroup,
 };
 
-export const useEnrollmentStore = create<EnrollmentStore>()(
+export const useEnrollmentFormStore = create<EnrollmentFormStore>()(
   persist(
     (set) => ({
-      ...initialEnrollmentState,
+      ...initialEnrollmentFormState,
+      setSelectedCourseId: (courseId) =>
+        set({
+          selectedCourseId: courseId,
+        }),
+      setEnrollmentType: (enrollmentType) =>
+        set({
+          enrollmentType,
+        }),
       setCourseSelection: (courseId, enrollmentType) =>
         set({
           selectedCourseId: courseId,
@@ -61,17 +68,13 @@ export const useEnrollmentStore = create<EnrollmentStore>()(
             ...group,
           },
         })),
-      goToStep: (step) =>
+      resetEnrollmentForm: () =>
         set({
-          currentStep: step,
-        }),
-      resetEnrollment: () =>
-        set({
-          ...initialEnrollmentState,
+          ...initialEnrollmentFormState,
         }),
     }),
     {
-      name: "liveklass-enrollment",
+      name: "liveklass-enrollment-form",
       storage: createJSONStorage(() => localStorage),
     },
   ),
