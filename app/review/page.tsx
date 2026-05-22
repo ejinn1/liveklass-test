@@ -1,12 +1,12 @@
 "use client";
 
+import { useMutation } from "@tanstack/react-query";
 import { type ChangeEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import type {
-  EnrollmentErrorResponse,
-  EnrollmentResponse,
-} from "@/utils/enrollmentSubmit";
+import { enrollmentTypeLabels } from "@/constants/enrollment";
+import { mockCourses } from "@/mocks/courses/data";
+import { createEnrollmentMutationOptions } from "@/remotes/enrollments/mutation";
 import { useEnrollmentFormStore } from "@/stores/enrollmentFormStore";
 import { useEnrollmentStepStore } from "@/stores/enrollmentStepStore";
 import { formatDateRange, formatPrice } from "@/utils/course";
@@ -14,24 +14,24 @@ import {
   createEnrollmentPayload,
   createEnrollmentSubmitError,
 } from "@/utils/enrollmentSubmit";
-import { mockCourses } from "@/mocks/courses/data";
-import { enrollmentTypeLabels } from "@/constants/enrollment";
 import { StepIndicator } from "@/components/enrollment/StepIndicator";
 
 export default function ReviewPage() {
   const router = useRouter();
   const [agreedToTerms, setAgreedToTerms] = useState(false);
-  const [submitError, setSubmitError] =
-    useState<EnrollmentErrorResponse | null>(null);
-  const [submitResult, setSubmitResult] = useState<EnrollmentResponse | null>(
-    null,
+  const createEnrollmentMutation = useMutation(
+    createEnrollmentMutationOptions(),
   );
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const { currentStep, goToStep } = useEnrollmentStepStore();
   const { applicant, enrollmentType, group, selectedCourseId } =
     useEnrollmentFormStore();
   const selectedCourse =
     mockCourses.find((course) => course.id === selectedCourseId) ?? null;
+  const submitResult = createEnrollmentMutation.data ?? null;
+  const submitError = createEnrollmentMutation.error
+    ? createEnrollmentSubmitError(createEnrollmentMutation.error)
+    : null;
+  const isSubmitting = createEnrollmentMutation.isPending;
 
   useEffect(() => {
     goToStep(3);
@@ -59,51 +59,23 @@ export default function ReviewPage() {
     return null;
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (!agreedToTerms || isSubmitting) {
       return;
     }
 
-    setIsSubmitting(true);
-    setSubmitError(null);
-
-    try {
-      const response = await fetch("/api/enrollments", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(
-          createEnrollmentPayload({
-            agreedToTerms,
-            applicant,
-            courseId: selectedCourse.id,
-            enrollmentType,
-            group,
-          }),
-        ),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setSubmitError(createEnrollmentSubmitError(data));
-        return;
-      }
-
-      setSubmitResult(data as EnrollmentResponse);
-    } catch {
-      setSubmitError({
-        code: "INVALID_INPUT",
-        message:
-          "일시적인 오류로 수강 신청을 제출하지 못했습니다. 다시 시도해 주세요.",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
+    createEnrollmentMutation.mutate(
+      createEnrollmentPayload({
+        agreedToTerms,
+        applicant,
+        courseId: selectedCourse.id,
+        enrollmentType,
+        group,
+      }),
+    );
   };
   const handleRetryClick = () => {
-    void handleSubmit();
+    handleSubmit();
   };
   const handleCourseEditClick = () => {
     router.push("/");
