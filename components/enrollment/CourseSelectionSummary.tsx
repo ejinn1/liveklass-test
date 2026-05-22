@@ -1,4 +1,4 @@
-import { enrollmentTypeLabels } from "@/app/constants/enrollment";
+import { enrollmentTypes } from "@/app/constants/enrollment";
 import type { Course } from "@/app/types/course";
 import type { EnrollmentType } from "@/app/types/enrollment";
 import { cn } from "@/app/utils/cn";
@@ -7,6 +7,7 @@ import {
   formatPrice,
   getCourseStatus,
 } from "@/app/utils/course";
+import { EnrollmentTypeButton } from "@/components/enrollment/EnrollmentTypeButton";
 
 type CourseSelectionSummaryProps = {
   selectedCourse: Course | null;
@@ -76,20 +77,13 @@ export function CourseSelectionSummary({
         <div className="mt-5">
           <p className="text-sm font-semibold text-zinc-900">신청 유형</p>
           <div className="mt-3 grid grid-cols-2 gap-2">
-            {(["personal", "group"] as const).map((type) => (
-              <button
+            {enrollmentTypes.map((type) => (
+              <EnrollmentTypeButton
                 key={type}
-                type="button"
-                onClick={() => onEnrollmentTypeChange(type)}
-                className={cn(
-                  "h-11 rounded-md border text-sm font-semibold transition",
-                  enrollmentType === type
-                    ? "border-zinc-950 bg-zinc-950 text-white"
-                    : "border-zinc-200 bg-white text-zinc-700 hover:border-zinc-400",
-                )}
-              >
-                {enrollmentTypeLabels[type]}
-              </button>
+                selected={enrollmentType === type}
+                type={type}
+                onClick={onEnrollmentTypeChange}
+              />
             ))}
           </div>
         </div>
