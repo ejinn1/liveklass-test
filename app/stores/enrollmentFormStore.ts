@@ -6,15 +6,8 @@ import type {
   EnrollmentFormState,
   EnrollmentFormStore,
   GroupInput,
-  ParticipantInput,
 } from "@/app/types/enrollment";
-
-function createEmptyParticipants(count: number): ParticipantInput[] {
-  return Array.from({ length: count }, () => ({
-    name: "",
-    email: "",
-  }));
-}
+import { syncParticipantsWithHeadCount } from "@/app/utils/enrollmentForm";
 
 const initialApplicant: ApplicantInput = {
   name: "",
@@ -26,7 +19,7 @@ const initialApplicant: ApplicantInput = {
 const initialGroup: GroupInput = {
   organizationName: "",
   headCount: 2,
-  participants: createEmptyParticipants(2),
+  participants: syncParticipantsWithHeadCount([], 2),
   contactPerson: "",
 };
 
