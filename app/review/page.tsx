@@ -1,6 +1,6 @@
 "use client";
 
-import { type ChangeEvent, useState } from "react";
+import { useState } from "react";
 
 import { EnrollmentCompleteView } from "@/components/enrollment/EnrollmentCompleteView";
 import { EnrollmentStepActions } from "@/components/enrollment/EnrollmentStepActions";
@@ -8,6 +8,7 @@ import { EnrollmentStepHeader } from "@/components/enrollment/EnrollmentStepHead
 import { ReviewApplicantSection } from "@/components/enrollment/ReviewApplicantSection";
 import { ReviewCourseSection } from "@/components/enrollment/ReviewCourseSection";
 import { ReviewGroupSection } from "@/components/enrollment/ReviewGroupSection";
+import { ReviewTermsAgreement } from "@/components/enrollment/ReviewTermsAgreement";
 import { useEnrollmentNavigationGuard } from "@/hooks/useEnrollmentNavigationGuard";
 import { useEnrollmentSubmit } from "@/hooks/useEnrollmentSubmit";
 import { useReviewStepAccessGuard } from "@/hooks/useReviewStepAccessGuard";
@@ -59,8 +60,8 @@ export default function ReviewPage() {
     return null;
   }
 
-  const handleTermsChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setAgreedToTerms(event.target.checked);
+  const handleTermsChange = (nextAgreedToTerms: boolean) => {
+    setAgreedToTerms(nextAgreedToTerms);
   };
 
   return (
@@ -88,17 +89,10 @@ export default function ReviewPage() {
         ) : null}
       </div>
 
-      <label className="mt-6 flex items-start gap-3 rounded-lg border border-zinc-200 bg-white p-5 text-sm text-zinc-700">
-        <input
-          type="checkbox"
-          checked={agreedToTerms}
-          onChange={handleTermsChange}
-          className="mt-1 size-4 rounded border-zinc-300"
-        />
-        <span>
-          수강 신청 정보가 정확하며, 이용약관과 개인정보 처리방침에 동의합니다.
-        </span>
-      </label>
+      <ReviewTermsAgreement
+        agreedToTerms={agreedToTerms}
+        onChange={handleTermsChange}
+      />
 
       {submitError ? (
         <div className="mt-4 rounded-md border border-red-200 bg-red-50 p-4">
