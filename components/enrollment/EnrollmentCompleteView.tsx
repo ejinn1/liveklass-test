@@ -1,3 +1,7 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+
 import type { SubmittedEnrollment } from "@/hooks/useEnrollmentSubmit";
 
 type EnrollmentCompleteViewProps = {
@@ -7,6 +11,12 @@ type EnrollmentCompleteViewProps = {
 export function EnrollmentCompleteView({
   submittedEnrollment,
 }: EnrollmentCompleteViewProps) {
+  const router = useRouter();
+
+  const handleHomeClick = () => {
+    router.push("/");
+  };
+
   return (
     <section className="mx-auto flex w-full max-w-4xl flex-1 flex-col px-5 py-8 sm:px-8 lg:px-10">
       <div className="rounded-lg border border-zinc-200 bg-white p-8">
@@ -34,6 +44,15 @@ export function EnrollmentCompleteView({
             </dd>
           </div>
         </dl>
+        <div className="mt-8 flex justify-end">
+          <button
+            type="button"
+            onClick={handleHomeClick}
+            className="h-12 cursor-pointer rounded-md bg-zinc-950 px-5 text-sm font-semibold text-white transition hover:bg-zinc-800"
+          >
+            홈으로 돌아가기
+          </button>
+        </div>
       </div>
     </section>
   );
