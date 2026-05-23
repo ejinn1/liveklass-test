@@ -1,25 +1,20 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useRef } from "react";
-import { useForm, useWatch, type FieldErrors } from "react-hook-form";
+import { useEffect } from "react";
+import type { FieldErrors } from "react-hook-form";
 
 import { ApplicantFields } from "@/components/enrollment/ApplicantFields";
 import { EnrollmentStepActions } from "@/components/enrollment/EnrollmentStepActions";
 import { EnrollmentStepHeader } from "@/components/enrollment/EnrollmentStepHeader";
 import { GroupFields } from "@/components/enrollment/GroupFields";
 import { useApplicantStepAccessGuard } from "@/hooks/useApplicantStepAccessGuard";
+import { useApplicantStepForm } from "@/hooks/useApplicantStepForm";
 import { useApplicantStepNavigation } from "@/hooks/useApplicantStepNavigation";
 import { useEnrollmentNavigationGuard } from "@/hooks/useEnrollmentNavigationGuard";
-import {
-  applicantStepSchema,
-  type ApplicantStepFormValues,
-  type GroupApplicantStepFormValues,
-} from "@/schemas/enrollment";
+import type { GroupApplicantStepFormValues } from "@/schemas/enrollment";
 import { useEnrollmentFormStore } from "@/stores/enrollmentFormStore";
 
 export default function ApplicantPage() {
-  const initializedFormRef = useRef(false);
   useEnrollmentNavigationGuard();
 
   const { currentStep, handlePreviousClick, handleValidSubmit } =
@@ -36,60 +31,13 @@ export default function ApplicantPage() {
   useApplicantStepAccessGuard({ enrollmentType, selectedCourseId });
 
   const {
-    control,
     formState: { errors },
     handleSubmit,
     register,
-    reset,
     setValue,
-  } = useForm<ApplicantStepFormValues>({
-    defaultValues:
-      enrollmentType === "group"
-        ? {
-            enrollmentType,
-            applicant,
-            group,
-          }
-        : {
-            enrollmentType: "personal",
-            applicant,
-          },
-    mode: "onBlur",
-    resolver: zodResolver(applicantStepSchema),
-  });
-
-  const watchedApplicant = useWatch({
-    control,
-    name: "applicant",
-  });
-  const watchedGroup = useWatch({
-    control,
-    name: "group",
-  });
-
-  useEffect(() => {
-    if (!hasHydrated || !enrollmentType) {
-      return;
-    }
-
-    if (initializedFormRef.current) {
-      return;
-    }
-
-    reset(
-      enrollmentType === "group"
-        ? {
-            enrollmentType,
-            applicant,
-            group,
-          }
-        : {
-            enrollmentType,
-            applicant,
-          },
-    );
-    initializedFormRef.current = true;
-  }, [applicant, enrollmentType, group, hasHydrated, reset]);
+    watchedApplicant,
+    watchedGroup,
+  } = useApplicantStepForm({ applicant, enrollmentType, group, hasHydrated });
 
   useEffect(() => {
     if (!hasHydrated) {
