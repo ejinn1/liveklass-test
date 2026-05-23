@@ -8,6 +8,7 @@ import { EnrollmentStepActions } from "@/components/enrollment/EnrollmentStepAct
 import { EnrollmentStepHeader } from "@/components/enrollment/EnrollmentStepHeader";
 import { enrollmentTypeLabels } from "@/constants/enrollment";
 import { useEnrollmentNavigationGuard } from "@/hooks/useEnrollmentNavigationGuard";
+import { useReviewStepAccessGuard } from "@/hooks/useReviewStepAccessGuard";
 import { mockCourses } from "@/mocks/courses/data";
 import { createEnrollmentMutationOptions } from "@/remotes/enrollments/mutation";
 import { useEnrollmentFormStore } from "@/stores/enrollmentFormStore";
@@ -34,6 +35,7 @@ export default function ReviewPage() {
     applicant,
     enrollmentType,
     group,
+    hasHydrated,
     resetEnrollmentForm,
     selectedCourseId,
   } = useEnrollmentFormStore();
@@ -57,33 +59,17 @@ export default function ReviewPage() {
   useEnrollmentNavigationGuard({
     enabled: !submittedEnrollment,
   });
+  useReviewStepAccessGuard({
+    applicant,
+    enrollmentType,
+    hasHydrated,
+    isSubmitted: Boolean(submittedEnrollment),
+    selectedCourseId,
+  });
 
   useEffect(() => {
     goToStep(3);
   }, [goToStep]);
-
-  useEffect(() => {
-    if (submittedEnrollment) {
-      return;
-    }
-
-    if (!selectedCourseId || !enrollmentType) {
-      router.replace("/");
-      return;
-    }
-
-    if (!applicant.name || !applicant.email || !applicant.phone) {
-      router.replace("/applicant");
-    }
-  }, [
-    applicant.email,
-    applicant.name,
-    applicant.phone,
-    enrollmentType,
-    router,
-    selectedCourseId,
-    submittedEnrollment,
-  ]);
 
   if (submittedEnrollment) {
     return (
