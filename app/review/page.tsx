@@ -12,9 +12,9 @@ import { ReviewSubmitError } from "@/components/enrollment/ReviewSubmitError";
 import { ReviewTermsAgreement } from "@/components/enrollment/ReviewTermsAgreement";
 import { useEnrollmentNavigationGuard } from "@/hooks/useEnrollmentNavigationGuard";
 import { useEnrollmentSubmit } from "@/hooks/useEnrollmentSubmit";
+import { useReviewSelectedCourse } from "@/hooks/useReviewSelectedCourse";
 import { useReviewStepAccessGuard } from "@/hooks/useReviewStepAccessGuard";
 import { useReviewStepNavigation } from "@/hooks/useReviewStepNavigation";
-import { mockCourses } from "@/mocks/courses/data";
 import { useEnrollmentFormStore } from "@/stores/enrollmentFormStore";
 
 export default function ReviewPage() {
@@ -27,8 +27,7 @@ export default function ReviewPage() {
   } = useReviewStepNavigation();
   const { applicant, enrollmentType, group, hasHydrated, selectedCourseId } =
     useEnrollmentFormStore();
-  const selectedCourse =
-    mockCourses.find((course) => course.id === selectedCourseId) ?? null;
+  const { selectedCourse } = useReviewSelectedCourse({ selectedCourseId });
   const {
     handleRetryClick,
     handleSubmit,
