@@ -4,6 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { type ChangeEvent, useEffect, useState } from "react";
 
+import { EnrollmentStepActions } from "@/components/enrollment/EnrollmentStepActions";
 import { EnrollmentStepHeader } from "@/components/enrollment/EnrollmentStepHeader";
 import { enrollmentTypeLabels } from "@/constants/enrollment";
 import { useEnrollmentNavigationGuard } from "@/hooks/useEnrollmentNavigationGuard";
@@ -333,28 +334,12 @@ export default function ReviewPage() {
         </div>
       ) : null}
 
-      <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
-        <button
-          type="button"
-          onClick={handlePreviousClick}
-          className="h-12 rounded-md border border-zinc-300 px-5 text-sm font-semibold text-zinc-700 transition hover:border-zinc-500"
-        >
-          이전 단계
-        </button>
-
-        <button
-          type="button"
-          onClick={handleSubmit}
-          className={
-            agreedToTerms && !isSubmitting
-              ? "h-12 rounded-md bg-zinc-950 px-5 text-sm font-semibold text-white transition hover:bg-zinc-800"
-              : "h-12 cursor-not-allowed rounded-md bg-zinc-200 px-5 text-sm font-semibold text-zinc-500"
-          }
-          disabled={!agreedToTerms || isSubmitting}
-        >
-          {isSubmitting ? "제출 중" : "제출하기"}
-        </button>
-      </div>
+      <EnrollmentStepActions
+        nextDisabled={!agreedToTerms || isSubmitting}
+        nextLabel={isSubmitting ? "제출 중" : "제출하기"}
+        onNext={handleSubmit}
+        onPrevious={handlePreviousClick}
+      />
     </section>
   );
 }

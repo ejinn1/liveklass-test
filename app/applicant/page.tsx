@@ -6,6 +6,7 @@ import { useEffect, useRef } from "react";
 import { useForm, useWatch, type FieldErrors } from "react-hook-form";
 
 import { ApplicantFields } from "@/components/enrollment/ApplicantFields";
+import { EnrollmentStepActions } from "@/components/enrollment/EnrollmentStepActions";
 import { EnrollmentStepHeader } from "@/components/enrollment/EnrollmentStepHeader";
 import { GroupFields } from "@/components/enrollment/GroupFields";
 import { useEnrollmentNavigationGuard } from "@/hooks/useEnrollmentNavigationGuard";
@@ -16,7 +17,6 @@ import {
 } from "@/schemas/enrollment";
 import { useEnrollmentFormStore } from "@/stores/enrollmentFormStore";
 import { useEnrollmentStepStore } from "@/stores/enrollmentStepStore";
-import { cn } from "@/utils/cn";
 
 export default function ApplicantPage() {
   const router = useRouter();
@@ -150,25 +150,11 @@ export default function ApplicantPage() {
         ) : null}
       </div>
 
-      <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
-        <button
-          type="button"
-          onClick={handlePreviousClick}
-          className="h-12 rounded-md border border-zinc-300 px-5 text-sm font-semibold text-zinc-700 transition hover:border-zinc-500"
-        >
-          이전 단계
-        </button>
-
-        <button
-          type="submit"
-          className={cn(
-            "h-12 rounded-md px-5 text-sm font-semibold transition",
-            "bg-zinc-950 text-white hover:bg-zinc-800",
-          )}
-        >
-          다음 단계
-        </button>
-      </div>
+      <EnrollmentStepActions
+        nextButtonType="submit"
+        nextLabel="다음 단계"
+        onPrevious={handlePreviousClick}
+      />
     </form>
   );
 }
