@@ -1,18 +1,17 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { type ChangeEvent, useEffect, useState } from "react";
+import { type ChangeEvent, useState } from "react";
 
 import { EnrollmentStepActions } from "@/components/enrollment/EnrollmentStepActions";
 import { EnrollmentStepHeader } from "@/components/enrollment/EnrollmentStepHeader";
 import { enrollmentTypeLabels } from "@/constants/enrollment";
 import { useEnrollmentNavigationGuard } from "@/hooks/useEnrollmentNavigationGuard";
 import { useReviewStepAccessGuard } from "@/hooks/useReviewStepAccessGuard";
+import { useReviewStepNavigation } from "@/hooks/useReviewStepNavigation";
 import { mockCourses } from "@/mocks/courses/data";
 import { createEnrollmentMutationOptions } from "@/remotes/enrollments/mutation";
 import { useEnrollmentFormStore } from "@/stores/enrollmentFormStore";
-import { useEnrollmentStepStore } from "@/stores/enrollmentStepStore";
 import { formatDateRange, formatPrice } from "@/utils/course";
 import {
   createEnrollmentPayload,
@@ -26,11 +25,15 @@ type SubmittedEnrollment = {
 };
 
 export default function ReviewPage() {
-  const router = useRouter();
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [submittedEnrollment, setSubmittedEnrollment] =
     useState<SubmittedEnrollment | null>(null);
-  const { currentStep, goToStep } = useEnrollmentStepStore();
+  const {
+    currentStep,
+    handleApplicantEditClick,
+    handleCourseEditClick,
+    handlePreviousClick,
+  } = useReviewStepNavigation();
   const {
     applicant,
     enrollmentType,
@@ -66,10 +69,6 @@ export default function ReviewPage() {
     isSubmitted: Boolean(submittedEnrollment),
     selectedCourseId,
   });
-
-  useEffect(() => {
-    goToStep(3);
-  }, [goToStep]);
 
   if (submittedEnrollment) {
     return (
@@ -125,15 +124,6 @@ export default function ReviewPage() {
   };
   const handleRetryClick = () => {
     handleSubmit();
-  };
-  const handleCourseEditClick = () => {
-    router.push("/");
-  };
-  const handleApplicantEditClick = () => {
-    router.push("/applicant");
-  };
-  const handlePreviousClick = () => {
-    router.push("/applicant");
   };
   const handleTermsChange = (event: ChangeEvent<HTMLInputElement>) => {
     setAgreedToTerms(event.target.checked);
