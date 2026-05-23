@@ -19,6 +19,12 @@ type EnrollmentRequest = {
   agreedToTerms?: boolean;
 };
 
+const mockEnrollmentKeys = new Set<string>();
+
+function createEnrollmentKey(body: EnrollmentRequest) {
+  return `${body.courseId}:${body.applicant?.email?.trim().toLowerCase()}`;
+}
+
 function createErrorResponse(
   code: EnrollmentErrorResponse["code"],
   message: string,
@@ -90,6 +96,16 @@ export async function POST(request: Request) {
     );
   }
 
+  const enrollmentKey = createEnrollmentKey(body);
+
+  if (mockEnrollmentKeys.has(enrollmentKey)) {
+    return createErrorResponse(
+      "DUPLICATE_ENROLLMENT",
+      "이미 신청된 강의입니다.",
+      409,
+    );
+  }
+
   const remainingSeats = course.maxCapacity - course.currentEnrollment;
   const requestedSeatCount = getRequestedSeatCount(body);
 
@@ -103,6 +119,8 @@ export async function POST(request: Request) {
       },
     );
   }
+
+  mockEnrollmentKeys.add(enrollmentKey);
 
   return Response.json({
     enrollmentId: `ENR-${Date.now()}`,
