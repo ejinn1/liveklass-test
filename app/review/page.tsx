@@ -1,64 +1,43 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
 import { type ChangeEvent, useState } from "react";
 
 import { EnrollmentStepActions } from "@/components/enrollment/EnrollmentStepActions";
 import { EnrollmentStepHeader } from "@/components/enrollment/EnrollmentStepHeader";
 import { enrollmentTypeLabels } from "@/constants/enrollment";
 import { useEnrollmentNavigationGuard } from "@/hooks/useEnrollmentNavigationGuard";
+import { useEnrollmentSubmit } from "@/hooks/useEnrollmentSubmit";
 import { useReviewStepAccessGuard } from "@/hooks/useReviewStepAccessGuard";
 import { useReviewStepNavigation } from "@/hooks/useReviewStepNavigation";
 import { mockCourses } from "@/mocks/courses/data";
-import { createEnrollmentMutationOptions } from "@/remotes/enrollments/mutation";
 import { useEnrollmentFormStore } from "@/stores/enrollmentFormStore";
 import { formatDateRange, formatPrice } from "@/utils/course";
-import {
-  createEnrollmentPayload,
-  createEnrollmentSubmitError,
-  type EnrollmentResponse,
-} from "@/utils/enrollmentSubmit";
-
-type SubmittedEnrollment = {
-  courseTitle: string;
-  result: EnrollmentResponse;
-};
 
 export default function ReviewPage() {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
-  const [submittedEnrollment, setSubmittedEnrollment] =
-    useState<SubmittedEnrollment | null>(null);
   const {
     currentStep,
     handleApplicantEditClick,
     handleCourseEditClick,
     handlePreviousClick,
   } = useReviewStepNavigation();
+  const { applicant, enrollmentType, group, hasHydrated, selectedCourseId } =
+    useEnrollmentFormStore();
+  const selectedCourse =
+    mockCourses.find((course) => course.id === selectedCourseId) ?? null;
   const {
+    handleRetryClick,
+    handleSubmit,
+    isSubmitting,
+    submitError,
+    submittedEnrollment,
+  } = useEnrollmentSubmit({
+    agreedToTerms,
     applicant,
     enrollmentType,
     group,
-    hasHydrated,
-    resetEnrollmentForm,
-    selectedCourseId,
-  } = useEnrollmentFormStore();
-  const selectedCourse =
-    mockCourses.find((course) => course.id === selectedCourseId) ?? null;
-  const createEnrollmentMutation = useMutation({
-    ...createEnrollmentMutationOptions(),
-    onSuccess: (result) => {
-      setSubmittedEnrollment({
-        courseTitle: selectedCourse?.title ?? "",
-        result,
-      });
-      resetEnrollmentForm();
-      useEnrollmentFormStore.persist.clearStorage();
-    },
+    selectedCourse,
   });
-  const submitError = createEnrollmentMutation.error
-    ? createEnrollmentSubmitError(createEnrollmentMutation.error)
-    : null;
-  const isSubmitting = createEnrollmentMutation.isPending;
   useEnrollmentNavigationGuard({
     enabled: !submittedEnrollment,
   });
@@ -107,24 +86,6 @@ export default function ReviewPage() {
     return null;
   }
 
-  const handleSubmit = () => {
-    if (!agreedToTerms || isSubmitting) {
-      return;
-    }
-
-    createEnrollmentMutation.mutate(
-      createEnrollmentPayload({
-        agreedToTerms,
-        applicant,
-        courseId: selectedCourse.id,
-        enrollmentType,
-        group,
-      }),
-    );
-  };
-  const handleRetryClick = () => {
-    handleSubmit();
-  };
   const handleTermsChange = (event: ChangeEvent<HTMLInputElement>) => {
     setAgreedToTerms(event.target.checked);
   };
