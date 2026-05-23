@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { useForm, useWatch, type FieldErrors } from "react-hook-form";
 
@@ -10,6 +9,7 @@ import { EnrollmentStepActions } from "@/components/enrollment/EnrollmentStepAct
 import { EnrollmentStepHeader } from "@/components/enrollment/EnrollmentStepHeader";
 import { GroupFields } from "@/components/enrollment/GroupFields";
 import { useApplicantStepAccessGuard } from "@/hooks/useApplicantStepAccessGuard";
+import { useApplicantStepNavigation } from "@/hooks/useApplicantStepNavigation";
 import { useEnrollmentNavigationGuard } from "@/hooks/useEnrollmentNavigationGuard";
 import {
   applicantStepSchema,
@@ -17,14 +17,13 @@ import {
   type GroupApplicantStepFormValues,
 } from "@/schemas/enrollment";
 import { useEnrollmentFormStore } from "@/stores/enrollmentFormStore";
-import { useEnrollmentStepStore } from "@/stores/enrollmentStepStore";
 
 export default function ApplicantPage() {
-  const router = useRouter();
   const initializedFormRef = useRef(false);
   useEnrollmentNavigationGuard();
 
-  const { currentStep, goToStep } = useEnrollmentStepStore();
+  const { currentStep, handlePreviousClick, handleValidSubmit } =
+    useApplicantStepNavigation();
   const {
     applicant,
     enrollmentType,
@@ -69,10 +68,6 @@ export default function ApplicantPage() {
   });
 
   useEffect(() => {
-    goToStep(2);
-  }, [goToStep]);
-
-  useEffect(() => {
     if (!hasHydrated || !enrollmentType) {
       return;
     }
@@ -114,12 +109,6 @@ export default function ApplicantPage() {
     return null;
   }
 
-  const handleValidSubmit = () => {
-    router.push("/review");
-  };
-  const handlePreviousClick = () => {
-    router.push("/");
-  };
   const groupErrors = errors as FieldErrors<GroupApplicantStepFormValues>;
 
   return (
