@@ -1,75 +1,48 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { CourseCategoryFilter } from "@/components/enrollment/CourseCategoryFilter";
 import { CourseListSection } from "@/components/enrollment/CourseListSection";
 import { CourseSelectionSummary } from "@/components/enrollment/CourseSelectionSummary";
 import { EnrollmentStepHeader } from "@/components/enrollment/EnrollmentStepHeader";
-import { courseListQueryOptions } from "@/remotes/courses/query";
-import { useEnrollmentFormStore } from "@/stores/enrollmentFormStore";
-import { useEnrollmentStepStore } from "@/stores/enrollmentStepStore";
-import type { Course, CourseCategory } from "@/types/course";
-import { getCourseStatus } from "@/utils/course";
+import { useCourseList } from "@/hooks/useCourseList";
+import { useCourseSelection } from "@/hooks/useCourseSelection";
+import { useCourseSelectionNavigation } from "@/hooks/useCourseSelectionNavigation";
+import type { CourseCategory } from "@/types/course";
 
 export default function Home() {
-  const router = useRouter();
-
   const [selectedCategory, setSelectedCategory] = useState<
     CourseCategory | undefined
   >(undefined);
-  const { currentStep, goToStep } = useEnrollmentStepStore();
   const {
+    categories,
+    courses,
+    error: isCourseListError,
+    loading: isCourseListPending,
+    handleRetry: handleCourseListRetry,
+  } = useCourseList(selectedCategory);
+
+  const {
+    canContinue,
     enrollmentType,
+    selectedCourse,
     selectedCourseId,
+    clearSelectedCourse,
+    handleCourseSelect,
     setEnrollmentType,
-    setSelectedCourseId,
-  } = useEnrollmentFormStore();
+  } = useCourseSelection({
+    courses,
+  });
 
-  const {
-    data: courseList,
-    isError: isCourseListError,
-    isPending: isCourseListPending,
-    refetch: refetchCourseList,
-  } = useQuery(courseListQueryOptions(selectedCategory));
-  const courses = courseList?.courses ?? [];
-  const categories = courseList?.categories ?? [];
-  const selectedCourse =
-    courses.find((course) => course.id === selectedCourseId) ?? null;
-
-  const selectedCourseStatus = selectedCourse
-    ? getCourseStatus(selectedCourse)
-    : null;
-
-  const canContinue =
-    Boolean(selectedCourse) &&
-    Boolean(enrollmentType) &&
-    selectedCourseStatus?.selectable === true;
+  const { currentStep, handleContinue } = useCourseSelectionNavigation({
+    canContinue,
+  });
 
   const handleCategoryChange = (category?: CourseCategory) => {
     setSelectedCategory(category);
-    setSelectedCourseId(null);
+    clearSelectedCourse();
   };
-  const handleCourseSelect = (course: Course) => {
-    setSelectedCourseId(course.id);
-  };
-  const handleCourseListRetry = () => {
-    void refetchCourseList();
-  };
-
-  const handleContinue = () => {
-    if (!canContinue) {
-      return;
-    }
-
-    router.push("/applicant");
-  };
-
-  useEffect(() => {
-    goToStep(1);
-  }, [goToStep]);
 
   return (
     <section className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-5 py-8 sm:px-8 lg:px-10">
