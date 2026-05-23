@@ -71,6 +71,7 @@ export function GroupFields({
         <EnrollmentInput
           {...register("group.organizationName")}
           placeholder="라이브클래스 팀"
+          invalid={Boolean(errors.group?.organizationName)}
         />
       </EnrollmentFormField>
 
@@ -87,6 +88,7 @@ export function GroupFields({
             valueAsNumber: true,
             onChange: handleHeadCountChange,
           })}
+          invalid={Boolean(errors.group?.headCount)}
         />
       </EnrollmentFormField>
 
@@ -104,6 +106,7 @@ export function GroupFields({
         <EnrollmentInput
           {...contactPersonRegister}
           placeholder="010-1234-5678"
+          invalid={Boolean(errors.group?.contactPerson)}
         />
       </EnrollmentFormField>
     </fieldset>

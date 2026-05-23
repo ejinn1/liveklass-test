@@ -1,6 +1,7 @@
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
 
 import type { ApplicantStepFormValues } from "@/schemas/enrollment";
+import { cn } from "@/utils/cn";
 import { formatPhoneNumberInput } from "@/utils/enrollmentForm";
 import { EnrollmentFormField } from "@/components/enrollment/EnrollmentFormField";
 import { EnrollmentInput } from "@/components/enrollment/EnrollmentInput";
@@ -33,7 +34,11 @@ export function ApplicantFields({ errors, register }: ApplicantFieldsProps) {
         required
         errorMessage={errors.applicant?.name?.message}
       >
-        <EnrollmentInput {...register("applicant.name")} placeholder="홍길동" />
+        <EnrollmentInput
+          {...register("applicant.name")}
+          placeholder="홍길동"
+          invalid={Boolean(errors.applicant?.name)}
+        />
       </EnrollmentFormField>
 
       <EnrollmentFormField
@@ -45,6 +50,7 @@ export function ApplicantFields({ errors, register }: ApplicantFieldsProps) {
           type="email"
           {...register("applicant.email")}
           placeholder="student@example.com"
+          invalid={Boolean(errors.applicant?.email)}
         />
       </EnrollmentFormField>
 
@@ -53,7 +59,11 @@ export function ApplicantFields({ errors, register }: ApplicantFieldsProps) {
         required
         errorMessage={errors.applicant?.phone?.message}
       >
-        <EnrollmentInput {...phoneRegister} placeholder="010-1234-5678" />
+        <EnrollmentInput
+          {...phoneRegister}
+          placeholder="010-1234-5678"
+          invalid={Boolean(errors.applicant?.phone)}
+        />
       </EnrollmentFormField>
 
       <EnrollmentFormField
@@ -63,7 +73,11 @@ export function ApplicantFields({ errors, register }: ApplicantFieldsProps) {
         <textarea
           {...register("applicant.motivation")}
           placeholder="수강 목적이나 기대하는 점을 입력해 주세요."
-          className="min-h-28 rounded-md border border-zinc-300 px-3 py-2 text-sm transition outline-none focus:border-zinc-950"
+          className={cn(
+            "min-h-28 rounded-md border border-zinc-300 px-3 py-2 text-sm transition outline-none focus:border-zinc-950",
+            errors.applicant?.motivation &&
+              "border-red-400 bg-red-50 focus:border-red-500",
+          )}
         />
       </EnrollmentFormField>
     </fieldset>

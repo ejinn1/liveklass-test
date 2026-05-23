@@ -29,6 +29,7 @@ export function ParticipantFieldItem({
           {...register(`group.participants.${index}.name`)}
           placeholder="홍길동"
           className="bg-white"
+          invalid={Boolean(errors.group?.participants?.[index]?.name)}
         />
       </EnrollmentFormField>
 
@@ -42,6 +43,7 @@ export function ParticipantFieldItem({
           {...register(`group.participants.${index}.email`)}
           placeholder="student@example.com"
           className="bg-white"
+          invalid={Boolean(errors.group?.participants?.[index]?.email)}
         />
       </EnrollmentFormField>
     </div>
