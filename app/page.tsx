@@ -2,17 +2,16 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { type MouseEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { CourseCard } from "@/components/enrollment/CourseCard";
+import { CourseCategoryFilter } from "@/components/enrollment/CourseCategoryFilter";
 import { CourseSelectionSummary } from "@/components/enrollment/CourseSelectionSummary";
 import { EnrollmentStepHeader } from "@/components/enrollment/EnrollmentStepHeader";
-import { categoryLabels } from "@/constants/course";
 import { courseListQueryOptions } from "@/remotes/courses/query";
 import { useEnrollmentFormStore } from "@/stores/enrollmentFormStore";
 import { useEnrollmentStepStore } from "@/stores/enrollmentStepStore";
 import type { Course, CourseCategory } from "@/types/course";
-import { cn } from "@/utils/cn";
 import { getCourseStatus } from "@/utils/course";
 
 export default function Home() {
@@ -53,14 +52,6 @@ export default function Home() {
     setSelectedCategory(category);
     setSelectedCourseId(null);
   };
-  const handleAllCategoryClick = () => {
-    handleCategoryChange(undefined);
-  };
-  const handleCategoryClick = (event: MouseEvent<HTMLButtonElement>) => {
-    handleCategoryChange(
-      event.currentTarget.dataset.category as CourseCategory,
-    );
-  };
   const handleCourseSelect = (course: Course) => {
     setSelectedCourseId(course.id);
   };
@@ -88,36 +79,11 @@ export default function Home() {
         description="카테고리별 강의 목록을 확인하고 신청 유형을 선택하면 다음 단계로 진행할 수 있습니다."
       />
 
-      <div className="mb-6 flex flex-wrap gap-2">
-        <button
-          type="button"
-          onClick={handleAllCategoryClick}
-          className={cn(
-            "h-10 rounded-md border px-4 text-sm font-medium transition",
-            selectedCategory === undefined
-              ? "border-zinc-950 bg-zinc-950 text-white"
-              : "border-zinc-200 bg-white text-zinc-700 hover:border-zinc-400",
-          )}
-        >
-          전체
-        </button>
-        {categories.map((category) => (
-          <button
-            key={category}
-            type="button"
-            data-category={category}
-            onClick={handleCategoryClick}
-            className={cn(
-              "h-10 rounded-md border px-4 text-sm font-medium transition",
-              selectedCategory === category
-                ? "border-zinc-950 bg-zinc-950 text-white"
-                : "border-zinc-200 bg-white text-zinc-700 hover:border-zinc-400",
-            )}
-          >
-            {categoryLabels[category]}
-          </button>
-        ))}
-      </div>
+      <CourseCategoryFilter
+        categories={categories}
+        selectedCategory={selectedCategory}
+        onChange={handleCategoryChange}
+      />
 
       <div className="grid flex-1 gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
         <div>
