@@ -5,6 +5,7 @@ import { type ChangeEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { enrollmentTypeLabels } from "@/constants/enrollment";
+import { useEnrollmentNavigationGuard } from "@/hooks/useEnrollmentNavigationGuard";
 import { mockCourses } from "@/mocks/courses/data";
 import { createEnrollmentMutationOptions } from "@/remotes/enrollments/mutation";
 import { useEnrollmentFormStore } from "@/stores/enrollmentFormStore";
@@ -32,6 +33,9 @@ export default function ReviewPage() {
     ? createEnrollmentSubmitError(createEnrollmentMutation.error)
     : null;
   const isSubmitting = createEnrollmentMutation.isPending;
+  useEnrollmentNavigationGuard({
+    enabled: !submitResult,
+  });
 
   useEffect(() => {
     goToStep(3);

@@ -10,6 +10,7 @@ import {
   type ApplicantStepFormValues,
   type GroupApplicantStepFormValues,
 } from "@/schemas/enrollment";
+import { useEnrollmentNavigationGuard } from "@/hooks/useEnrollmentNavigationGuard";
 import { useEnrollmentFormStore } from "@/stores/enrollmentFormStore";
 import { useEnrollmentStepStore } from "@/stores/enrollmentStepStore";
 import { cn } from "@/utils/cn";
@@ -20,6 +21,7 @@ import { StepIndicator } from "@/components/enrollment/StepIndicator";
 export default function ApplicantPage() {
   const router = useRouter();
   const initializedFormRef = useRef(false);
+  useEnrollmentNavigationGuard();
 
   const { currentStep, goToStep } = useEnrollmentStepStore();
   const {
