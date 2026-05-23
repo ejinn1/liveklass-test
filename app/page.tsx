@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { CourseCard } from "@/components/enrollment/CourseCard";
+import { CourseCardSkeleton } from "@/components/enrollment/CourseCardSkeleton";
 import { CourseCategoryFilter } from "@/components/enrollment/CourseCategoryFilter";
 import { CourseSelectionSummary } from "@/components/enrollment/CourseSelectionSummary";
 import { EnrollmentStepHeader } from "@/components/enrollment/EnrollmentStepHeader";
@@ -88,13 +89,10 @@ export default function Home() {
       <div className="grid flex-1 gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
         <div>
           {isCourseListPending ? (
-            <div className="rounded-lg border border-zinc-200 bg-white p-8 text-center">
-              <h2 className="text-lg font-semibold text-zinc-950">
-                강의 목록을 불러오는 중입니다
-              </h2>
-              <p className="mt-2 text-sm text-zinc-600">
-                잠시 후 목록이 표시됩니다.
-              </p>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <CourseCardSkeleton key={index} />
+              ))}
             </div>
           ) : isCourseListError ? (
             <div className="rounded-lg border border-red-200 bg-red-50 p-8 text-center">
