@@ -4,9 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { CourseCard } from "@/components/enrollment/CourseCard";
-import { CourseCardSkeleton } from "@/components/enrollment/CourseCardSkeleton";
 import { CourseCategoryFilter } from "@/components/enrollment/CourseCategoryFilter";
+import { CourseListSection } from "@/components/enrollment/CourseListSection";
 import { CourseSelectionSummary } from "@/components/enrollment/CourseSelectionSummary";
 import { EnrollmentStepHeader } from "@/components/enrollment/EnrollmentStepHeader";
 import { courseListQueryOptions } from "@/remotes/courses/query";
@@ -87,48 +86,14 @@ export default function Home() {
       />
 
       <div className="grid flex-1 gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
-        <div>
-          {isCourseListPending ? (
-            <div className="grid gap-4 sm:grid-cols-2">
-              {Array.from({ length: 4 }).map((_, index) => (
-                <CourseCardSkeleton key={index} />
-              ))}
-            </div>
-          ) : isCourseListError ? (
-            <div className="rounded-lg border border-red-200 bg-red-50 p-8 text-center">
-              <h2 className="text-lg font-semibold text-red-700">
-                강의 목록을 불러오지 못했습니다
-              </h2>
-              <button
-                type="button"
-                onClick={handleCourseListRetry}
-                className="mt-4 h-10 rounded-md border border-red-300 bg-white px-4 text-sm font-semibold text-red-700 transition hover:border-red-500"
-              >
-                다시 시도
-              </button>
-            </div>
-          ) : courses.length === 0 ? (
-            <div className="rounded-lg border border-zinc-200 bg-white p-8 text-center">
-              <h2 className="text-lg font-semibold text-zinc-950">
-                표시할 강의가 없습니다
-              </h2>
-              <p className="mt-2 text-sm text-zinc-600">
-                다른 카테고리를 선택해 주세요.
-              </p>
-            </div>
-          ) : (
-            <div className="grid gap-4 sm:grid-cols-2">
-              {courses.map((course) => (
-                <CourseCard
-                  key={course.id}
-                  course={course}
-                  selected={selectedCourse?.id === course.id}
-                  onSelect={handleCourseSelect}
-                />
-              ))}
-            </div>
-          )}
-        </div>
+        <CourseListSection
+          courses={courses}
+          error={isCourseListError}
+          loading={isCourseListPending}
+          selectedCourseId={selectedCourseId}
+          onRetry={handleCourseListRetry}
+          onSelect={handleCourseSelect}
+        />
 
         <CourseSelectionSummary
           selectedCourse={selectedCourse}
