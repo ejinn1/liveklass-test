@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import type { FieldErrors } from "react-hook-form";
 
 import { ApplicantFields } from "@/components/enrollment/ApplicantFields";
@@ -11,6 +10,7 @@ import { useApplicantStepAccessGuard } from "@/hooks/useApplicantStepAccessGuard
 import { useApplicantStepForm } from "@/hooks/useApplicantStepForm";
 import { useApplicantStepNavigation } from "@/hooks/useApplicantStepNavigation";
 import { useEnrollmentNavigationGuard } from "@/hooks/useEnrollmentNavigationGuard";
+import { useSyncApplicantFormToStore } from "@/hooks/useSyncApplicantFormToStore";
 import type { GroupApplicantStepFormValues } from "@/schemas/enrollment";
 import { useEnrollmentFormStore } from "@/stores/enrollmentFormStore";
 
@@ -19,15 +19,8 @@ export default function ApplicantPage() {
 
   const { currentStep, handlePreviousClick, handleValidSubmit } =
     useApplicantStepNavigation();
-  const {
-    applicant,
-    enrollmentType,
-    group,
-    hasHydrated,
-    selectedCourseId,
-    setApplicant,
-    setGroup,
-  } = useEnrollmentFormStore();
+  const { applicant, enrollmentType, group, hasHydrated, selectedCourseId } =
+    useEnrollmentFormStore();
   useApplicantStepAccessGuard({ enrollmentType, selectedCourseId });
 
   const {
@@ -38,20 +31,12 @@ export default function ApplicantPage() {
     watchedApplicant,
     watchedGroup,
   } = useApplicantStepForm({ applicant, enrollmentType, group, hasHydrated });
-
-  useEffect(() => {
-    if (!hasHydrated) {
-      return;
-    }
-
-    setApplicant(watchedApplicant);
-  }, [hasHydrated, setApplicant, watchedApplicant]);
-
-  useEffect(() => {
-    if (hasHydrated && enrollmentType === "group" && watchedGroup) {
-      setGroup(watchedGroup);
-    }
-  }, [enrollmentType, hasHydrated, setGroup, watchedGroup]);
+  useSyncApplicantFormToStore({
+    enrollmentType,
+    hasHydrated,
+    watchedApplicant,
+    watchedGroup,
+  });
 
   if (!hasHydrated || !selectedCourseId || !enrollmentType) {
     return null;
