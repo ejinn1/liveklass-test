@@ -1,9 +1,10 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
-import { type ChangeEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { type ChangeEvent, useEffect, useState } from "react";
 
+import { EnrollmentStepHeader } from "@/components/enrollment/EnrollmentStepHeader";
 import { enrollmentTypeLabels } from "@/constants/enrollment";
 import { useEnrollmentNavigationGuard } from "@/hooks/useEnrollmentNavigationGuard";
 import { mockCourses } from "@/mocks/courses/data";
@@ -16,7 +17,6 @@ import {
   createEnrollmentSubmitError,
   type EnrollmentResponse,
 } from "@/utils/enrollmentSubmit";
-import { StepIndicator } from "@/components/enrollment/StepIndicator";
 
 type SubmittedEnrollment = {
   courseTitle: string;
@@ -153,21 +153,12 @@ export default function ReviewPage() {
   };
 
   return (
-    <section className="mx-auto flex w-full max-w-4xl flex-1 flex-col px-5 py-8 sm:px-8 lg:px-10">
-      <div className="mb-8 flex flex-col gap-4 border-b border-zinc-200 pb-6">
-        <div>
-          <p className="text-sm font-semibold text-zinc-500">Step 3</p>
-          <h1 className="mt-2 text-3xl font-bold tracking-normal text-zinc-950">
-            신청 내용을 확인하세요
-          </h1>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-600">
-            제출 전 강의와 신청 정보를 확인하고 필요한 경우 이전 단계에서 수정할
-            수 있습니다.
-          </p>
-        </div>
-
-        <StepIndicator currentStep={currentStep} />
-      </div>
+    <section className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-5 py-8 sm:px-8 lg:px-10">
+      <EnrollmentStepHeader
+        currentStep={currentStep}
+        title="신청 내용을 확인하세요"
+        description="제출 전 강의와 신청 정보를 확인하고 필요한 경우 이전 단계에서 수정할 수 있습니다."
+      />
 
       <div className="space-y-5">
         <section className="rounded-lg border border-zinc-200 bg-white p-5">

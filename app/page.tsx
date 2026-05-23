@@ -6,7 +6,7 @@ import { type MouseEvent, useEffect, useState } from "react";
 
 import { CourseCard } from "@/components/enrollment/CourseCard";
 import { CourseSelectionSummary } from "@/components/enrollment/CourseSelectionSummary";
-import { StepIndicator } from "@/components/enrollment/StepIndicator";
+import { EnrollmentStepHeader } from "@/components/enrollment/EnrollmentStepHeader";
 import { categoryLabels } from "@/constants/course";
 import { courseListQueryOptions } from "@/remotes/courses/query";
 import { useEnrollmentFormStore } from "@/stores/enrollmentFormStore";
@@ -82,22 +82,11 @@ export default function Home() {
 
   return (
     <section className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-5 py-8 sm:px-8 lg:px-10">
-      <div className="mb-8 flex flex-col gap-4 border-b border-zinc-200 pb-6 lg:flex-row lg:items-end lg:justify-between">
-        <div>
-          <p className="text-sm font-semibold text-zinc-500">Step 1</p>
-          <h1 className="mt-2 text-3xl font-bold tracking-normal text-zinc-950">
-            수강할 강의를 선택하세요
-          </h1>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-600">
-            카테고리별 강의 목록을 확인하고 신청 유형을 선택하면 다음 단계로
-            진행할 수 있습니다.
-          </p>
-        </div>
-      </div>
-
-      <div className="mb-6">
-        <StepIndicator currentStep={currentStep} />
-      </div>
+      <EnrollmentStepHeader
+        currentStep={currentStep}
+        title="수강할 강의를 선택하세요"
+        description="카테고리별 강의 목록을 확인하고 신청 유형을 선택하면 다음 단계로 진행할 수 있습니다."
+      />
 
       <div className="mb-6 flex flex-wrap gap-2">
         <button

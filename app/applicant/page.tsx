@@ -5,18 +5,18 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { useForm, useWatch, type FieldErrors } from "react-hook-form";
 
+import { ApplicantFields } from "@/components/enrollment/ApplicantFields";
+import { EnrollmentStepHeader } from "@/components/enrollment/EnrollmentStepHeader";
+import { GroupFields } from "@/components/enrollment/GroupFields";
+import { useEnrollmentNavigationGuard } from "@/hooks/useEnrollmentNavigationGuard";
 import {
   applicantStepSchema,
   type ApplicantStepFormValues,
   type GroupApplicantStepFormValues,
 } from "@/schemas/enrollment";
-import { useEnrollmentNavigationGuard } from "@/hooks/useEnrollmentNavigationGuard";
 import { useEnrollmentFormStore } from "@/stores/enrollmentFormStore";
 import { useEnrollmentStepStore } from "@/stores/enrollmentStepStore";
 import { cn } from "@/utils/cn";
-import { ApplicantFields } from "@/components/enrollment/ApplicantFields";
-import { GroupFields } from "@/components/enrollment/GroupFields";
-import { StepIndicator } from "@/components/enrollment/StepIndicator";
 
 export default function ApplicantPage() {
   const router = useRouter();
@@ -129,21 +129,13 @@ export default function ApplicantPage() {
   return (
     <form
       onSubmit={handleSubmit(handleValidSubmit)}
-      className="mx-auto flex w-full max-w-4xl flex-1 flex-col px-5 py-8 sm:px-8 lg:px-10"
+      className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-5 py-8 sm:px-8 lg:px-10"
     >
-      <div className="mb-8 flex flex-col gap-4 border-b border-zinc-200 pb-6">
-        <div>
-          <p className="text-sm font-semibold text-zinc-500">Step 2</p>
-          <h1 className="mt-2 text-3xl font-bold tracking-normal text-zinc-950">
-            수강생 정보를 입력하세요
-          </h1>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-600">
-            입력한 정보는 이전 단계로 돌아가거나 새로고침해도 유지됩니다.
-          </p>
-        </div>
-
-        <StepIndicator currentStep={currentStep} />
-      </div>
+      <EnrollmentStepHeader
+        currentStep={currentStep}
+        title="수강생 정보를 입력하세요"
+        description="입력한 정보는 이전 단계로 돌아가거나 새로고침해도 유지됩니다."
+      />
 
       <div className="space-y-5">
         <ApplicantFields errors={errors} register={register} />
