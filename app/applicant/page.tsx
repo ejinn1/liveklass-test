@@ -9,6 +9,7 @@ import { ApplicantFields } from "@/components/enrollment/ApplicantFields";
 import { EnrollmentStepActions } from "@/components/enrollment/EnrollmentStepActions";
 import { EnrollmentStepHeader } from "@/components/enrollment/EnrollmentStepHeader";
 import { GroupFields } from "@/components/enrollment/GroupFields";
+import { useApplicantStepAccessGuard } from "@/hooks/useApplicantStepAccessGuard";
 import { useEnrollmentNavigationGuard } from "@/hooks/useEnrollmentNavigationGuard";
 import {
   applicantStepSchema,
@@ -33,6 +34,7 @@ export default function ApplicantPage() {
     setApplicant,
     setGroup,
   } = useEnrollmentFormStore();
+  useApplicantStepAccessGuard({ enrollmentType, selectedCourseId });
 
   const {
     control,
@@ -69,12 +71,6 @@ export default function ApplicantPage() {
   useEffect(() => {
     goToStep(2);
   }, [goToStep]);
-
-  useEffect(() => {
-    if (!selectedCourseId || !enrollmentType) {
-      router.replace("/");
-    }
-  }, [enrollmentType, router, selectedCourseId]);
 
   useEffect(() => {
     if (!hasHydrated || !enrollmentType) {
