@@ -20,14 +20,25 @@ import { StepIndicator } from "@/components/enrollment/StepIndicator";
 export default function ReviewPage() {
   const router = useRouter();
   const [agreedToTerms, setAgreedToTerms] = useState(false);
-  const createEnrollmentMutation = useMutation(
-    createEnrollmentMutationOptions(),
-  );
+  const [submittedCourseTitle, setSubmittedCourseTitle] = useState("");
   const { currentStep, goToStep } = useEnrollmentStepStore();
-  const { applicant, enrollmentType, group, selectedCourseId } =
-    useEnrollmentFormStore();
+  const {
+    applicant,
+    enrollmentType,
+    group,
+    resetEnrollmentForm,
+    selectedCourseId,
+  } = useEnrollmentFormStore();
   const selectedCourse =
     mockCourses.find((course) => course.id === selectedCourseId) ?? null;
+  const createEnrollmentMutation = useMutation({
+    ...createEnrollmentMutationOptions(),
+    onSuccess: () => {
+      setSubmittedCourseTitle(selectedCourse?.title ?? "");
+      resetEnrollmentForm();
+      useEnrollmentFormStore.persist.clearStorage();
+    },
+  });
   const submitResult = createEnrollmentMutation.data ?? null;
   const submitError = createEnrollmentMutation.error
     ? createEnrollmentSubmitError(createEnrollmentMutation.error)
@@ -42,6 +53,10 @@ export default function ReviewPage() {
   }, [goToStep]);
 
   useEffect(() => {
+    if (submitResult) {
+      return;
+    }
+
     if (!selectedCourseId || !enrollmentType) {
       router.replace("/");
       return;
@@ -57,7 +72,41 @@ export default function ReviewPage() {
     enrollmentType,
     router,
     selectedCourseId,
+    submitResult,
   ]);
+
+  if (submitResult) {
+    return (
+      <section className="mx-auto flex w-full max-w-4xl flex-1 flex-col px-5 py-8 sm:px-8 lg:px-10">
+        <div className="rounded-lg border border-zinc-200 bg-white p-8">
+          <p className="text-sm font-semibold text-emerald-700">신청 완료</p>
+          <h1 className="mt-2 text-3xl font-bold text-zinc-950">
+            수강 신청이 완료되었습니다
+          </h1>
+          <dl className="mt-6 grid gap-3 text-sm">
+            <div className="flex justify-between gap-4">
+              <dt className="text-zinc-500">신청 번호</dt>
+              <dd className="font-semibold text-zinc-950">
+                {submitResult.enrollmentId}
+              </dd>
+            </div>
+            <div className="flex justify-between gap-4">
+              <dt className="text-zinc-500">상태</dt>
+              <dd className="font-semibold text-zinc-950">
+                {submitResult.status}
+              </dd>
+            </div>
+            <div className="flex justify-between gap-4">
+              <dt className="text-zinc-500">신청 강의</dt>
+              <dd className="text-right font-semibold text-zinc-950">
+                {submittedCourseTitle}
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+    );
+  }
 
   if (!selectedCourse || !enrollmentType) {
     return null;
@@ -93,39 +142,6 @@ export default function ReviewPage() {
   const handleTermsChange = (event: ChangeEvent<HTMLInputElement>) => {
     setAgreedToTerms(event.target.checked);
   };
-
-  if (submitResult) {
-    return (
-      <section className="mx-auto flex w-full max-w-4xl flex-1 flex-col px-5 py-8 sm:px-8 lg:px-10">
-        <div className="rounded-lg border border-zinc-200 bg-white p-8">
-          <p className="text-sm font-semibold text-emerald-700">신청 완료</p>
-          <h1 className="mt-2 text-3xl font-bold text-zinc-950">
-            수강 신청이 완료되었습니다
-          </h1>
-          <dl className="mt-6 grid gap-3 text-sm">
-            <div className="flex justify-between gap-4">
-              <dt className="text-zinc-500">신청 번호</dt>
-              <dd className="font-semibold text-zinc-950">
-                {submitResult.enrollmentId}
-              </dd>
-            </div>
-            <div className="flex justify-between gap-4">
-              <dt className="text-zinc-500">상태</dt>
-              <dd className="font-semibold text-zinc-950">
-                {submitResult.status}
-              </dd>
-            </div>
-            <div className="flex justify-between gap-4">
-              <dt className="text-zinc-500">신청 강의</dt>
-              <dd className="text-right font-semibold text-zinc-950">
-                {selectedCourse.title}
-              </dd>
-            </div>
-          </dl>
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section className="mx-auto flex w-full max-w-4xl flex-1 flex-col px-5 py-8 sm:px-8 lg:px-10">
