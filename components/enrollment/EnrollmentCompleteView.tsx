@@ -3,6 +3,24 @@
 import { useRouter } from "next/navigation";
 
 import type { SubmittedEnrollment } from "@/hooks/useEnrollmentSubmit";
+import type { EnrollmentResponse } from "@/utils/enrollmentSubmit";
+
+const enrollmentStatusContent: Record<
+  EnrollmentResponse["status"],
+  {
+    label: string;
+    toneClassName: string;
+  }
+> = {
+  confirmed: {
+    label: "신청 확정",
+    toneClassName: "bg-emerald-50 text-emerald-700 ring-emerald-200",
+  },
+  pending: {
+    label: "확인 대기",
+    toneClassName: "bg-amber-50 text-amber-700 ring-amber-200",
+  },
+};
 
 type EnrollmentCompleteViewProps = {
   submittedEnrollment: SubmittedEnrollment;
@@ -12,6 +30,8 @@ export function EnrollmentCompleteView({
   submittedEnrollment,
 }: EnrollmentCompleteViewProps) {
   const router = useRouter();
+  const statusContent =
+    enrollmentStatusContent[submittedEnrollment.result.status];
 
   const handleHomeClick = () => {
     router.push("/");
@@ -33,8 +53,12 @@ export function EnrollmentCompleteView({
           </div>
           <div className="flex justify-between gap-4">
             <dt className="text-zinc-500">상태</dt>
-            <dd className="font-semibold text-zinc-950">
-              {submittedEnrollment.result.status}
+            <dd className="flex flex-col items-end gap-1 text-right">
+              <span
+                className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${statusContent.toneClassName}`}
+              >
+                {statusContent.label}
+              </span>
             </dd>
           </div>
           <div className="flex justify-between gap-4">
