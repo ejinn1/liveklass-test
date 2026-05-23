@@ -10,7 +10,10 @@ import type {
   GroupApplicantStepFormValues,
 } from "@/schemas/enrollment";
 import type { GroupInput } from "@/types/enrollment";
-import { syncParticipantsWithHeadCount } from "@/utils/enrollmentForm";
+import {
+  formatPhoneNumberInput,
+  syncParticipantsWithHeadCount,
+} from "@/utils/enrollmentForm";
 import { EnrollmentFormField } from "@/components/enrollment/EnrollmentFormField";
 import { EnrollmentInput } from "@/components/enrollment/EnrollmentInput";
 import { ParticipantFields } from "@/components/enrollment/ParticipantFields";
@@ -43,6 +46,11 @@ export function GroupFields({
       },
     );
   };
+  const contactPersonRegister = register("group.contactPerson", {
+    onChange: (event) => {
+      event.target.value = formatPhoneNumberInput(event.target.value);
+    },
+  });
 
   return (
     <fieldset className="space-y-5 rounded-lg border border-zinc-200 bg-white p-5">
@@ -91,7 +99,7 @@ export function GroupFields({
         errorMessage={errors.group?.contactPerson?.message}
       >
         <EnrollmentInput
-          {...register("group.contactPerson")}
+          {...contactPersonRegister}
           placeholder="010-1234-5678"
         />
       </EnrollmentFormField>

@@ -1,4 +1,5 @@
 import type { ApplicantInput } from "@/types/enrollment";
+import { formatPhoneNumber } from "@/utils/enrollmentForm";
 
 type ReviewApplicantSectionProps = {
   applicant: ApplicantInput;
@@ -33,7 +34,9 @@ export function ReviewApplicantSection({
         </div>
         <div className="flex justify-between gap-4">
           <dt className="text-zinc-500">전화번호</dt>
-          <dd className="font-medium text-zinc-950">{applicant.phone}</dd>
+          <dd className="font-medium text-zinc-950">
+            {formatPhoneNumber(applicant.phone)}
+          </dd>
         </div>
         {applicant.motivation ? (
           <div className="grid gap-1">

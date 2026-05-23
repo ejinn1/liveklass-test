@@ -1,6 +1,7 @@
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
 
 import type { ApplicantStepFormValues } from "@/schemas/enrollment";
+import { formatPhoneNumberInput } from "@/utils/enrollmentForm";
 import { EnrollmentFormField } from "@/components/enrollment/EnrollmentFormField";
 import { EnrollmentInput } from "@/components/enrollment/EnrollmentInput";
 
@@ -10,6 +11,12 @@ type ApplicantFieldsProps = {
 };
 
 export function ApplicantFields({ errors, register }: ApplicantFieldsProps) {
+  const phoneRegister = register("applicant.phone", {
+    onChange: (event) => {
+      event.target.value = formatPhoneNumberInput(event.target.value);
+    },
+  });
+
   return (
     <fieldset className="space-y-5 rounded-lg border border-zinc-200 bg-white p-5">
       <div>
@@ -43,10 +50,7 @@ export function ApplicantFields({ errors, register }: ApplicantFieldsProps) {
         label="전화번호"
         errorMessage={errors.applicant?.phone?.message}
       >
-        <EnrollmentInput
-          {...register("applicant.phone")}
-          placeholder="010-1234-5678"
-        />
+        <EnrollmentInput {...phoneRegister} placeholder="010-1234-5678" />
       </EnrollmentFormField>
 
       <EnrollmentFormField

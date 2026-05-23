@@ -1,4 +1,5 @@
 import type { GroupInput } from "@/types/enrollment";
+import { formatPhoneNumber } from "@/utils/enrollmentForm";
 
 type ReviewGroupSectionProps = {
   group: GroupInput;
@@ -34,7 +35,9 @@ export function ReviewGroupSection({ group, onEdit }: ReviewGroupSectionProps) {
         </div>
         <div className="flex justify-between gap-4">
           <dt className="text-zinc-500">담당자 연락처</dt>
-          <dd className="font-medium text-zinc-950">{group.contactPerson}</dd>
+          <dd className="font-medium text-zinc-950">
+            {formatPhoneNumber(group.contactPerson)}
+          </dd>
         </div>
       </dl>
 
