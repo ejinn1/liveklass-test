@@ -5,6 +5,7 @@ import type {
   GroupApplicantStepFormValues,
 } from "@/schemas/enrollment";
 import { EnrollmentFormField } from "@/components/enrollment/EnrollmentFormField";
+import { EnrollmentInput } from "@/components/enrollment/EnrollmentInput";
 
 type ParticipantFieldItemProps = {
   errors: FieldErrors<GroupApplicantStepFormValues>;
@@ -23,10 +24,10 @@ export function ParticipantFieldItem({
         label={`참가자 ${index + 1} 이름`}
         errorMessage={errors.group?.participants?.[index]?.name?.message}
       >
-        <input
+        <EnrollmentInput
           {...register(`group.participants.${index}.name`)}
           placeholder="홍길동"
-          className="h-11 rounded-md border border-zinc-300 bg-white px-3 text-sm transition outline-none focus:border-zinc-950"
+          className="bg-white"
         />
       </EnrollmentFormField>
 
@@ -34,11 +35,11 @@ export function ParticipantFieldItem({
         label={`참가자 ${index + 1} 이메일`}
         errorMessage={errors.group?.participants?.[index]?.email?.message}
       >
-        <input
+        <EnrollmentInput
           type="email"
           {...register(`group.participants.${index}.email`)}
           placeholder="student@example.com"
-          className="h-11 rounded-md border border-zinc-300 bg-white px-3 text-sm transition outline-none focus:border-zinc-950"
+          className="bg-white"
         />
       </EnrollmentFormField>
     </div>

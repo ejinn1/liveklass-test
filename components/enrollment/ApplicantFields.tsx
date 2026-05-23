@@ -2,6 +2,7 @@ import type { FieldErrors, UseFormRegister } from "react-hook-form";
 
 import type { ApplicantStepFormValues } from "@/schemas/enrollment";
 import { EnrollmentFormField } from "@/components/enrollment/EnrollmentFormField";
+import { EnrollmentInput } from "@/components/enrollment/EnrollmentInput";
 
 type ApplicantFieldsProps = {
   errors: FieldErrors<ApplicantStepFormValues>;
@@ -24,22 +25,17 @@ export function ApplicantFields({ errors, register }: ApplicantFieldsProps) {
         label="이름"
         errorMessage={errors.applicant?.name?.message}
       >
-        <input
-          {...register("applicant.name")}
-          placeholder="홍길동"
-          className="h-11 rounded-md border border-zinc-300 px-3 text-sm transition outline-none focus:border-zinc-950"
-        />
+        <EnrollmentInput {...register("applicant.name")} placeholder="홍길동" />
       </EnrollmentFormField>
 
       <EnrollmentFormField
         label="이메일"
         errorMessage={errors.applicant?.email?.message}
       >
-        <input
+        <EnrollmentInput
           type="email"
           {...register("applicant.email")}
           placeholder="student@example.com"
-          className="h-11 rounded-md border border-zinc-300 px-3 text-sm transition outline-none focus:border-zinc-950"
         />
       </EnrollmentFormField>
 
@@ -47,10 +43,9 @@ export function ApplicantFields({ errors, register }: ApplicantFieldsProps) {
         label="전화번호"
         errorMessage={errors.applicant?.phone?.message}
       >
-        <input
+        <EnrollmentInput
           {...register("applicant.phone")}
           placeholder="010-1234-5678"
-          className="h-11 rounded-md border border-zinc-300 px-3 text-sm transition outline-none focus:border-zinc-950"
         />
       </EnrollmentFormField>
 

@@ -12,6 +12,7 @@ import type {
 import type { GroupInput } from "@/types/enrollment";
 import { syncParticipantsWithHeadCount } from "@/utils/enrollmentForm";
 import { EnrollmentFormField } from "@/components/enrollment/EnrollmentFormField";
+import { EnrollmentInput } from "@/components/enrollment/EnrollmentInput";
 import { ParticipantFields } from "@/components/enrollment/ParticipantFields";
 
 type GroupFieldsProps = {
@@ -58,10 +59,9 @@ export function GroupFields({
         label="단체명"
         errorMessage={errors.group?.organizationName?.message}
       >
-        <input
+        <EnrollmentInput
           {...register("group.organizationName")}
           placeholder="라이브클래스 팀"
-          className="h-11 rounded-md border border-zinc-300 px-3 text-sm transition outline-none focus:border-zinc-950"
         />
       </EnrollmentFormField>
 
@@ -69,7 +69,7 @@ export function GroupFields({
         label="신청 인원수"
         errorMessage={errors.group?.headCount?.message}
       >
-        <input
+        <EnrollmentInput
           type="number"
           min={2}
           max={10}
@@ -77,7 +77,6 @@ export function GroupFields({
             valueAsNumber: true,
             onChange: handleHeadCountChange,
           })}
-          className="h-11 rounded-md border border-zinc-300 px-3 text-sm transition outline-none focus:border-zinc-950"
         />
       </EnrollmentFormField>
 
@@ -91,10 +90,9 @@ export function GroupFields({
         label="담당자 연락처"
         errorMessage={errors.group?.contactPerson?.message}
       >
-        <input
+        <EnrollmentInput
           {...register("group.contactPerson")}
           placeholder="010-1234-5678"
-          className="h-11 rounded-md border border-zinc-300 px-3 text-sm transition outline-none focus:border-zinc-950"
         />
       </EnrollmentFormField>
     </fieldset>
