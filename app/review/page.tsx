@@ -14,13 +14,20 @@ import { formatDateRange, formatPrice } from "@/utils/course";
 import {
   createEnrollmentPayload,
   createEnrollmentSubmitError,
+  type EnrollmentResponse,
 } from "@/utils/enrollmentSubmit";
 import { StepIndicator } from "@/components/enrollment/StepIndicator";
+
+type SubmittedEnrollment = {
+  courseTitle: string;
+  result: EnrollmentResponse;
+};
 
 export default function ReviewPage() {
   const router = useRouter();
   const [agreedToTerms, setAgreedToTerms] = useState(false);
-  const [submittedCourseTitle, setSubmittedCourseTitle] = useState("");
+  const [submittedEnrollment, setSubmittedEnrollment] =
+    useState<SubmittedEnrollment | null>(null);
   const { currentStep, goToStep } = useEnrollmentStepStore();
   const {
     applicant,
@@ -33,19 +40,21 @@ export default function ReviewPage() {
     mockCourses.find((course) => course.id === selectedCourseId) ?? null;
   const createEnrollmentMutation = useMutation({
     ...createEnrollmentMutationOptions(),
-    onSuccess: () => {
-      setSubmittedCourseTitle(selectedCourse?.title ?? "");
+    onSuccess: (result) => {
+      setSubmittedEnrollment({
+        courseTitle: selectedCourse?.title ?? "",
+        result,
+      });
       resetEnrollmentForm();
       useEnrollmentFormStore.persist.clearStorage();
     },
   });
-  const submitResult = createEnrollmentMutation.data ?? null;
   const submitError = createEnrollmentMutation.error
     ? createEnrollmentSubmitError(createEnrollmentMutation.error)
     : null;
   const isSubmitting = createEnrollmentMutation.isPending;
   useEnrollmentNavigationGuard({
-    enabled: !submitResult,
+    enabled: !submittedEnrollment,
   });
 
   useEffect(() => {
@@ -53,7 +62,7 @@ export default function ReviewPage() {
   }, [goToStep]);
 
   useEffect(() => {
-    if (submitResult) {
+    if (submittedEnrollment) {
       return;
     }
 
@@ -72,10 +81,10 @@ export default function ReviewPage() {
     enrollmentType,
     router,
     selectedCourseId,
-    submitResult,
+    submittedEnrollment,
   ]);
 
-  if (submitResult) {
+  if (submittedEnrollment) {
     return (
       <section className="mx-auto flex w-full max-w-4xl flex-1 flex-col px-5 py-8 sm:px-8 lg:px-10">
         <div className="rounded-lg border border-zinc-200 bg-white p-8">
@@ -87,19 +96,19 @@ export default function ReviewPage() {
             <div className="flex justify-between gap-4">
               <dt className="text-zinc-500">신청 번호</dt>
               <dd className="font-semibold text-zinc-950">
-                {submitResult.enrollmentId}
+                {submittedEnrollment.result.enrollmentId}
               </dd>
             </div>
             <div className="flex justify-between gap-4">
               <dt className="text-zinc-500">상태</dt>
               <dd className="font-semibold text-zinc-950">
-                {submitResult.status}
+                {submittedEnrollment.result.status}
               </dd>
             </div>
             <div className="flex justify-between gap-4">
               <dt className="text-zinc-500">신청 강의</dt>
               <dd className="text-right font-semibold text-zinc-950">
-                {submittedCourseTitle}
+                {submittedEnrollment.courseTitle}
               </dd>
             </div>
           </dl>
