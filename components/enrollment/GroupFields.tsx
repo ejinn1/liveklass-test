@@ -11,6 +11,7 @@ import type {
 } from "@/schemas/enrollment";
 import type { GroupInput } from "@/types/enrollment";
 import { syncParticipantsWithHeadCount } from "@/utils/enrollmentForm";
+import { EnrollmentFormField } from "@/components/enrollment/EnrollmentFormField";
 import { ParticipantFields } from "@/components/enrollment/ParticipantFields";
 
 type GroupFieldsProps = {
@@ -53,22 +54,21 @@ export function GroupFields({
         </p>
       </div>
 
-      <label className="grid gap-2 text-sm font-medium text-zinc-800">
-        단체명
+      <EnrollmentFormField
+        label="단체명"
+        errorMessage={errors.group?.organizationName?.message}
+      >
         <input
           {...register("group.organizationName")}
           placeholder="라이브클래스 팀"
           className="h-11 rounded-md border border-zinc-300 px-3 text-sm transition outline-none focus:border-zinc-950"
         />
-        {errors.group?.organizationName ? (
-          <span className="text-xs font-medium text-red-600">
-            {errors.group.organizationName.message}
-          </span>
-        ) : null}
-      </label>
+      </EnrollmentFormField>
 
-      <label className="grid gap-2 text-sm font-medium text-zinc-800">
-        신청 인원수
+      <EnrollmentFormField
+        label="신청 인원수"
+        errorMessage={errors.group?.headCount?.message}
+      >
         <input
           type="number"
           min={2}
@@ -79,12 +79,7 @@ export function GroupFields({
           })}
           className="h-11 rounded-md border border-zinc-300 px-3 text-sm transition outline-none focus:border-zinc-950"
         />
-        {errors.group?.headCount ? (
-          <span className="text-xs font-medium text-red-600">
-            {errors.group.headCount.message}
-          </span>
-        ) : null}
-      </label>
+      </EnrollmentFormField>
 
       <ParticipantFields
         errors={errors}
@@ -92,19 +87,16 @@ export function GroupFields({
         register={register}
       />
 
-      <label className="grid gap-2 text-sm font-medium text-zinc-800">
-        담당자 연락처
+      <EnrollmentFormField
+        label="담당자 연락처"
+        errorMessage={errors.group?.contactPerson?.message}
+      >
         <input
           {...register("group.contactPerson")}
           placeholder="010-1234-5678"
           className="h-11 rounded-md border border-zinc-300 px-3 text-sm transition outline-none focus:border-zinc-950"
         />
-        {errors.group?.contactPerson ? (
-          <span className="text-xs font-medium text-red-600">
-            {errors.group.contactPerson.message}
-          </span>
-        ) : null}
-      </label>
+      </EnrollmentFormField>
     </fieldset>
   );
 }

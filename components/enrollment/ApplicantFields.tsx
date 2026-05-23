@@ -1,6 +1,7 @@
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
 
 import type { ApplicantStepFormValues } from "@/schemas/enrollment";
+import { EnrollmentFormField } from "@/components/enrollment/EnrollmentFormField";
 
 type ApplicantFieldsProps = {
   errors: FieldErrors<ApplicantStepFormValues>;
@@ -19,62 +20,50 @@ export function ApplicantFields({ errors, register }: ApplicantFieldsProps) {
         </p>
       </div>
 
-      <label className="grid gap-2 text-sm font-medium text-zinc-800">
-        이름
+      <EnrollmentFormField
+        label="이름"
+        errorMessage={errors.applicant?.name?.message}
+      >
         <input
           {...register("applicant.name")}
           placeholder="홍길동"
           className="h-11 rounded-md border border-zinc-300 px-3 text-sm transition outline-none focus:border-zinc-950"
         />
-        {errors.applicant?.name ? (
-          <span className="text-xs font-medium text-red-600">
-            {errors.applicant.name.message}
-          </span>
-        ) : null}
-      </label>
+      </EnrollmentFormField>
 
-      <label className="grid gap-2 text-sm font-medium text-zinc-800">
-        이메일
+      <EnrollmentFormField
+        label="이메일"
+        errorMessage={errors.applicant?.email?.message}
+      >
         <input
           type="email"
           {...register("applicant.email")}
           placeholder="student@example.com"
           className="h-11 rounded-md border border-zinc-300 px-3 text-sm transition outline-none focus:border-zinc-950"
         />
-        {errors.applicant?.email ? (
-          <span className="text-xs font-medium text-red-600">
-            {errors.applicant.email.message}
-          </span>
-        ) : null}
-      </label>
+      </EnrollmentFormField>
 
-      <label className="grid gap-2 text-sm font-medium text-zinc-800">
-        전화번호
+      <EnrollmentFormField
+        label="전화번호"
+        errorMessage={errors.applicant?.phone?.message}
+      >
         <input
           {...register("applicant.phone")}
           placeholder="010-1234-5678"
           className="h-11 rounded-md border border-zinc-300 px-3 text-sm transition outline-none focus:border-zinc-950"
         />
-        {errors.applicant?.phone ? (
-          <span className="text-xs font-medium text-red-600">
-            {errors.applicant.phone.message}
-          </span>
-        ) : null}
-      </label>
+      </EnrollmentFormField>
 
-      <label className="grid gap-2 text-sm font-medium text-zinc-800">
-        수강 동기
+      <EnrollmentFormField
+        label="수강 동기"
+        errorMessage={errors.applicant?.motivation?.message}
+      >
         <textarea
           {...register("applicant.motivation")}
           placeholder="수강 목적이나 기대하는 점을 입력해 주세요."
           className="min-h-28 rounded-md border border-zinc-300 px-3 py-2 text-sm transition outline-none focus:border-zinc-950"
         />
-        {errors.applicant?.motivation ? (
-          <span className="text-xs font-medium text-red-600">
-            {errors.applicant.motivation.message}
-          </span>
-        ) : null}
-      </label>
+      </EnrollmentFormField>
     </fieldset>
   );
 }
