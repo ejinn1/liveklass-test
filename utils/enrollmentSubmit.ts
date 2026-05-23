@@ -39,6 +39,16 @@ export type EnrollmentErrorResponse = {
   details?: Record<string, string>;
 };
 
+const enrollmentErrorMessages: Record<EnrollmentErrorResponse["code"], string> =
+  {
+    COURSE_FULL:
+      "선택한 강의의 잔여 좌석이 부족합니다. 신청 인원을 줄이거나 다른 강의를 선택해 주세요.",
+    DUPLICATE_ENROLLMENT:
+      "이미 같은 이메일로 신청한 강의입니다. 신청 내역을 확인하거나 다른 강의를 선택해 주세요.",
+    INVALID_INPUT:
+      "입력한 신청 정보를 다시 확인해 주세요. 필요한 경우 이전 단계로 돌아가 수정할 수 있습니다.",
+  };
+
 export function isEnrollmentErrorResponse(
   value: unknown,
 ): value is EnrollmentErrorResponse {
@@ -53,7 +63,10 @@ export function createEnrollmentSubmitError(
   value: unknown,
 ): EnrollmentErrorResponse {
   if (isEnrollmentErrorResponse(value)) {
-    return value;
+    return {
+      ...value,
+      message: enrollmentErrorMessages[value.code],
+    };
   }
 
   return {
