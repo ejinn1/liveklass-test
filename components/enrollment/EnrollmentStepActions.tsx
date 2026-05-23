@@ -25,7 +25,7 @@ export function EnrollmentStepActions({
         type="button"
         onClick={onPrevious}
         disabled={previousDisabled}
-        className="h-12 rounded-md border border-zinc-300 px-5 text-sm font-semibold text-zinc-700 transition hover:border-zinc-500 disabled:cursor-not-allowed disabled:opacity-60"
+        className="h-12 cursor-pointer rounded-md border border-zinc-300 px-5 text-sm font-semibold text-zinc-700 transition hover:border-zinc-500 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {previousLabel}
       </button>
@@ -35,7 +35,7 @@ export function EnrollmentStepActions({
         onClick={onNext}
         disabled={nextDisabled}
         className={cn(
-          "h-12 rounded-md px-5 text-sm font-semibold transition",
+          "h-12 cursor-pointer rounded-md px-5 text-sm font-semibold transition",
           nextDisabled
             ? "cursor-not-allowed bg-zinc-200 text-zinc-500"
             : "bg-zinc-950 text-white hover:bg-zinc-800",

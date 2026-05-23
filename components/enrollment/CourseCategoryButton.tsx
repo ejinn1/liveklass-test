@@ -22,7 +22,7 @@ export function CourseCategoryButton({
       type="button"
       onClick={handleClick}
       className={cn(
-        "h-10 rounded-md border px-4 text-sm font-medium transition",
+        "h-10 cursor-pointer rounded-md border px-4 text-sm font-medium transition",
         selected
           ? "border-zinc-950 bg-zinc-950 text-white"
           : "border-zinc-200 bg-white text-zinc-700 hover:border-zinc-400",

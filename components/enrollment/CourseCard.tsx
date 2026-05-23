@@ -21,7 +21,7 @@ export function CourseCard({ course, selected, onSelect }: CourseCardProps) {
       disabled={!status.selectable}
       onClick={handleSelect}
       className={cn(
-        "grid min-h-64 w-full grid-rows-[auto_1fr_auto] rounded-lg border bg-white p-5 text-left shadow-sm transition",
+        "grid min-h-64 w-full cursor-pointer grid-rows-[auto_1fr_auto] rounded-lg border bg-white p-5 text-left shadow-sm transition",
         selected
           ? "border-zinc-950 ring-2 ring-zinc-950"
           : "border-zinc-200 hover:border-zinc-400 hover:shadow-md",

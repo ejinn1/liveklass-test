@@ -29,7 +29,7 @@ export function ReviewSubmitError({
         type="button"
         onClick={onRetry}
         disabled={disabled}
-        className="mt-3 h-10 rounded-md border border-red-300 bg-white px-4 text-sm font-semibold text-red-700 transition hover:border-red-500 disabled:cursor-not-allowed disabled:opacity-60"
+        className="mt-3 h-10 cursor-pointer rounded-md border border-red-300 bg-white px-4 text-sm font-semibold text-red-700 transition hover:border-red-500 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {isSubmitting ? "재시도 중" : "다시 시도"}
       </button>

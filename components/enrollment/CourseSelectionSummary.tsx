@@ -89,7 +89,7 @@ export function CourseSelectionSummary({
           disabled={!canContinue}
           onClick={onContinue}
           className={cn(
-            "mt-6 h-12 w-full rounded-md text-sm font-semibold transition",
+            "mt-6 h-12 w-full cursor-pointer rounded-md text-sm font-semibold transition",
             canContinue
               ? "bg-zinc-950 text-white hover:bg-zinc-800"
               : "cursor-not-allowed bg-zinc-200 text-zinc-500",

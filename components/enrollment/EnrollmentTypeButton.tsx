@@ -22,7 +22,7 @@ export function EnrollmentTypeButton({
       type="button"
       onClick={handleClick}
       className={cn(
-        "h-11 rounded-md border text-sm font-semibold transition",
+        "h-11 cursor-pointer rounded-md border text-sm font-semibold transition",
         selected
           ? "border-zinc-950 bg-zinc-950 text-white"
           : "border-zinc-200 bg-white text-zinc-700 hover:border-zinc-400",

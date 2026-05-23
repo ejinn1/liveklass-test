@@ -21,7 +21,7 @@ export function ReviewCourseSection({
         <button
           type="button"
           onClick={onEdit}
-          className="text-sm font-semibold text-zinc-700 underline-offset-4 hover:underline"
+          className="cursor-pointer text-sm font-semibold text-zinc-700 underline-offset-4 hover:underline"
         >
           수정
         </button>

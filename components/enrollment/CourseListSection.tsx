@@ -43,7 +43,7 @@ export function CourseListSection({
           <button
             type="button"
             onClick={onRetry}
-            className="mt-4 h-10 rounded-md border border-red-300 bg-white px-4 text-sm font-semibold text-red-700 transition hover:border-red-500"
+            className="mt-4 h-10 cursor-pointer rounded-md border border-red-300 bg-white px-4 text-sm font-semibold text-red-700 transition hover:border-red-500"
           >
             다시 시도
           </button>
