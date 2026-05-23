@@ -22,6 +22,7 @@ export function ParticipantFieldItem({
     <div className="grid gap-3 rounded-md border border-zinc-200 bg-zinc-50 p-4 sm:grid-cols-2">
       <EnrollmentFormField
         label={`참가자 ${index + 1} 이름`}
+        required
         errorMessage={errors.group?.participants?.[index]?.name?.message}
       >
         <EnrollmentInput
@@ -33,6 +34,7 @@ export function ParticipantFieldItem({
 
       <EnrollmentFormField
         label={`참가자 ${index + 1} 이메일`}
+        required
         errorMessage={errors.group?.participants?.[index]?.email?.message}
       >
         <EnrollmentInput

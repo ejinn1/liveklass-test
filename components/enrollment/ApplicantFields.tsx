@@ -30,6 +30,7 @@ export function ApplicantFields({ errors, register }: ApplicantFieldsProps) {
 
       <EnrollmentFormField
         label="이름"
+        required
         errorMessage={errors.applicant?.name?.message}
       >
         <EnrollmentInput {...register("applicant.name")} placeholder="홍길동" />
@@ -37,6 +38,7 @@ export function ApplicantFields({ errors, register }: ApplicantFieldsProps) {
 
       <EnrollmentFormField
         label="이메일"
+        required
         errorMessage={errors.applicant?.email?.message}
       >
         <EnrollmentInput
@@ -48,6 +50,7 @@ export function ApplicantFields({ errors, register }: ApplicantFieldsProps) {
 
       <EnrollmentFormField
         label="전화번호"
+        required
         errorMessage={errors.applicant?.phone?.message}
       >
         <EnrollmentInput {...phoneRegister} placeholder="010-1234-5678" />

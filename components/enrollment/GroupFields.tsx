@@ -65,6 +65,7 @@ export function GroupFields({
 
       <EnrollmentFormField
         label="단체명"
+        required
         errorMessage={errors.group?.organizationName?.message}
       >
         <EnrollmentInput
@@ -75,6 +76,7 @@ export function GroupFields({
 
       <EnrollmentFormField
         label="신청 인원수"
+        required
         errorMessage={errors.group?.headCount?.message}
       >
         <EnrollmentInput
@@ -96,6 +98,7 @@ export function GroupFields({
 
       <EnrollmentFormField
         label="담당자 연락처"
+        required
         errorMessage={errors.group?.contactPerson?.message}
       >
         <EnrollmentInput
