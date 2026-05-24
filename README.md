@@ -1,36 +1,293 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## 프로젝트 개요
 
-## Getting Started
+LiveKlass는 온라인 교육 플랫폼의 다단계 수강 신청 플로우를 구현한 과제 프로젝트입니다.
 
-First, run the development server:
+사용자는 강의를 선택하고, 개인 신청 또는 단체 신청 유형에 맞는 정보를 입력한 뒤, 최종 확인 화면에서 신청 내용을 검토하고 제출할 수 있습니다. 각 단계의 입력 데이터는 이전 단계로 돌아가거나 새로고침해도 유지되며, 제출 성공/실패 상황에 따라 완료 화면 또는 에러 메시지를 제공합니다.
+
+주요 구현 범위는 다음과 같습니다.
+
+- 1단계: 강의 목록 조회, 카테고리 필터, 강의 선택, 신청 유형 선택
+- 2단계: 개인/단체 신청 정보 입력, 조건부 필드, 유효성 검증
+- 3단계: 신청 내용 확인, 섹션별 수정 이동, 약관 동의, 제출
+- 제출 결과: 신청 완료 화면, 정원 초과/중복 신청 등 제출 실패 처리
+- 선택 구현: localStorage 기반 입력 데이터 복구, 이탈 방지, 반응형 레이아웃, E2E 테스트
+
+## 기술 스택
+
+### Core
+
+- **Next.js 16**
+  - App Router 기반으로 페이지를 단계별 URL(`/`, `/applicant`, `/review`)로 분리하기 위해 사용했습니다.
+  - Route Handler를 통해 `/api/courses`, `/api/enrollments` mock API를 같은 프로젝트 안에서 구성했습니다.
+
+- **React 19**
+  - 신청 플로우의 UI 상태, 조건부 렌더링, 폼 상호작용을 컴포넌트 단위로 구성하기 위해 사용했습니다.
+
+- **TypeScript**
+  - 강의, 신청 유형, API 응답, 폼 입력값의 구조를 명확하게 관리하기 위해 사용했습니다.
+  - 개인 신청과 단체 신청처럼 분기되는 데이터 구조를 타입으로 표현해 구현 중 실수를 줄였습니다.
+
+### Styling
+
+- **Tailwind CSS 4**
+  - 별도 디자인 시안이 없는 과제 특성상 빠르게 일관된 UI를 만들기 위해 사용했습니다.
+  - 반응형 레이아웃, 상태별 스타일, 폼 에러 스타일을 컴포넌트 안에서 직관적으로 관리했습니다.
+
+- **clsx, tailwind-merge**
+  - 조건부 className 조합과 Tailwind class 충돌 정리를 위해 `cn` 유틸로 감싸 사용했습니다.
+
+### State & Server Data
+
+- **TanStack Query**
+  - 강의 목록 조회와 수강 신청 제출을 서버 상태로 분리하기 위해 사용했습니다.
+  - query/mutation 옵션을 함수로 분리해 API 호출부와 화면 로직의 결합도를 낮췄습니다.
+  - 강의 목록 query key는 `["courses", "list", category]` 형태로 설계했습니다.
+    - 전체 목록은 `["courses", "list", "all"]`, 카테고리 목록은 `["courses", "list", "development"]`처럼 구분합니다.
+    - 같은 강의 목록 도메인 안에서도 필터 조건별 캐시가 섞이지 않도록 category를 key에 포함했습니다.
+
+- **Zustand**
+  - 선택 강의, 신청 유형, 입력 폼 데이터처럼 페이지 이동 중 유지되어야 하는 클라이언트 상태를 관리하기 위해 사용했습니다.
+  - 폼 데이터 store와 스텝 인디케이터 store를 분리해 역할을 명확히 했습니다.
+
+- **localStorage persist**
+  - 새로고침 후에도 입력 데이터가 복구되어야 하는 선택 요구사항을 만족하기 위해 Zustand persist를 사용했습니다.
+
+### Form & Validation
+
+- **React Hook Form**
+  - 입력 필드가 많고 단체 신청에서 동적으로 참가자 필드가 늘어나는 구조라 폼 상태와 검증 흐름을 안정적으로 관리하기 위해 사용했습니다.
+
+- **Zod**
+  - 2단계 입력값 검증 규칙을 스키마로 선언하고, React Hook Form resolver와 연결했습니다.
+  - 개인 신청과 단체 신청의 검증 규칙을 신청 유형에 따라 분기했습니다.
+
+### Test & Quality
+
+- **Playwright**
+  - 개인/단체 신청 성공, 제출 실패, 새로고침 복구, 단계 이동, 접근 방지 등 사용자 플로우를 브라우저 기준으로 검증하기 위해 사용했습니다.
+
+- **ESLint, Prettier**
+  - 코드 품질과 포맷 일관성을 유지하기 위해 사용했습니다.
+  - `prettier-plugin-tailwindcss`로 Tailwind class 정렬도 함께 관리합니다.
+
+## 실행 방법
+
+### 1. 의존성 설치
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. 개발 서버 실행
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+기본 실행 주소는 다음과 같습니다.
 
-## Learn More
+```text
+http://localhost:3000
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 3. 프로덕션 빌드
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm build
+pnpm start
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 4. 코드 품질 검사
 
-## Deploy on Vercel
+```bash
+pnpm lint
+pnpm format:check
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+포맷을 적용하려면 다음 명령어를 사용합니다.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+pnpm format
+```
+
+### 5. E2E 테스트 실행
+
+Playwright 브라우저가 설치되어 있지 않다면 먼저 Chromium을 설치합니다.
+
+```bash
+pnpm exec playwright install chromium
+```
+
+전체 E2E 테스트 실행:
+
+```bash
+pnpm test:e2e
+```
+
+특정 테스트 파일만 실행:
+
+```bash
+pnpm exec playwright test e2e/personal-enrollment.spec.ts
+```
+
+Playwright 설정은 `127.0.0.1:3100`에서 Next.js 개발 서버를 자동으로 실행하도록 구성되어 있습니다.
+
+## 프로젝트 구조 설명
+
+```text
+app/
+  api/
+    courses/
+    enrollments/
+  applicant/
+  review/
+  page.tsx
+components/
+  common/
+  enrollment/
+constants/
+e2e/
+  helpers/
+hooks/
+lib/
+mocks/
+providers/
+remotes/
+  courses/
+  enrollments/
+schemas/
+stores/
+types/
+utils/
+```
+
+- **`app/`**
+  - Next.js App Router 페이지와 Route Handler를 관리합니다.
+  - `/`는 강의 선택, `/applicant`는 신청자 정보 입력, `/review`는 신청 확인 및 제출 단계입니다.
+  - `app/api`에는 mock API인 강의 목록 조회와 수강 신청 제출 API가 있습니다.
+
+- **`components/common/`**
+  - 여러 화면에서 재사용 가능한 공통 UI 컴포넌트를 둡니다.
+  - 현재는 스켈레톤 UI를 공통 컴포넌트로 관리합니다.
+
+- **`components/enrollment/`**
+  - 수강 신청 도메인에 속한 UI 컴포넌트를 관리합니다.
+  - 강의 카드, 카테고리 필터, 스텝 헤더, 입력 필드, 리뷰 섹션, 완료 화면 등이 포함됩니다.
+
+- **`constants/`**
+  - 카테고리 라벨, 신청 유형 라벨처럼 화면과 도메인에서 함께 사용하는 상수 값을 관리합니다.
+
+- **`e2e/`**
+  - Playwright 기반 E2E 테스트를 관리합니다.
+  - `helpers/`에는 강의 선택, 리뷰 페이지 진입처럼 여러 테스트에서 재사용하는 테스트 헬퍼가 있습니다.
+
+- **`hooks/`**
+  - 페이지별 상태 조합, navigation, 접근 가드, 폼 동기화, 제출 로직 등을 커스텀 훅으로 분리했습니다.
+  - 페이지 컴포넌트가 화면 조립에 집중할 수 있도록 비즈니스 흐름을 이곳에서 관리합니다.
+
+- **`mocks/`**
+  - mock API에서 사용하는 강의 데이터를 관리합니다.
+
+- **`providers/`**
+  - 앱 전역 Provider를 관리합니다.
+  - 현재는 TanStack Query의 `QueryProvider`가 있습니다.
+
+- **`remotes/`**
+  - API 호출과 TanStack Query 옵션을 도메인별로 관리합니다.
+  - `service.ts`는 실제 fetch 호출, `query.ts`/`mutation.ts`는 Query/Mutation 설정을 담당합니다.
+
+- **`schemas/`**
+  - Zod 기반 폼 검증 스키마를 관리합니다.
+
+- **`stores/`**
+  - Zustand store를 관리합니다.
+  - 신청 폼 데이터 store와 현재 스텝 store를 분리했습니다.
+
+- **`types/`**
+  - 강의, 신청 유형, 입력 데이터 등 도메인 타입을 관리합니다.
+
+- **`utils/`**
+  - 가격/날짜/전화번호 포맷, 제출 에러 변환, 이탈 방지 판단 등 순수 함수성 유틸을 관리합니다.
+
+## 요구사항 해석 및 가정
+
+- 강의 선택, 신청자 정보 입력, 신청 확인은 독립된 단계로 보고 각각 URL을 분리했습니다.
+  - 페이지 이동이 발생해도 신청 데이터가 유지되어야 하므로 전역 store와 localStorage persist를 함께 사용했습니다.
+
+- 개인 신청과 단체 신청은 같은 2단계 페이지에서 조건부로 렌더링했습니다.
+  - 공통 신청자 정보는 동일하게 받고, 단체 신청인 경우에만 단체명, 신청 인원수, 참가자 명단, 담당자 연락처를 추가로 노출합니다.
+
+- 신청 인원수는 단체 신청 참가자 명단의 입력 필드 개수와 동일하다고 해석했습니다.
+  - 인원수를 변경하면 참가자 입력 배열도 같은 길이로 동기화됩니다.
+
+- 정원이 마감된 강의는 선택 자체를 막는 것이 사용자 경험상 명확하다고 판단했습니다.
+  - `currentEnrollment >= maxCapacity`인 강의는 disabled 상태로 표시합니다.
+
+- 잔여 좌석보다 단체 신청 인원이 많은 경우는 제출 실패로 처리했습니다.
+  - 요구사항의 `COURSE_FULL` 에러를 mock API에서 반환하고, 화면에서는 잔여 좌석 부족 안내와 재시도 버튼을 보여줍니다.
+
+- 중복 신청은 같은 강의와 같은 이메일 조합을 기준으로 판단했습니다.
+  - 실제 서비스에서는 서버 DB 기준으로 관리되어야 하지만, 과제에서는 mock API 메모리 상태로 구현했습니다.
+
+- 제출 완료 후에는 임시 저장된 신청 폼 데이터를 초기화하는 것이 맞다고 해석했습니다.
+  - 완료된 신청은 더 이상 작성 중인 draft가 아니기 때문입니다.
+
+## 설계 결정과 이유
+
+- **단계별 URL 분리**
+  - 강의 선택, 정보 입력, 확인/제출 단계가 명확히 분리되어 있어 브라우저 이동과 접근 가드를 구현하기 좋습니다.
+  - 잘못된 직접 접근은 필요한 상태가 없을 때 이전 단계 또는 첫 단계로 redirect합니다.
+
+- **폼 데이터 store와 스텝 store 분리**
+  - 폼 데이터는 사용자가 입력한 신청 draft이고, 스텝 인디케이터는 현재 화면 진행 상태입니다.
+  - 두 상태는 변경 이유와 생명주기가 다르기 때문에 별도 store로 관리했습니다.
+
+- **React Hook Form + Zod 조합**
+  - 입력 필드가 많고 단체 신청에서 동적 배열 필드가 필요해 React Hook Form이 적합했습니다.
+  - 검증 규칙은 Zod 스키마에 모아 두어 UI와 검증 로직이 섞이지 않도록 했습니다.
+
+- **TanStack Query 계층 분리**
+  - API 호출 함수는 `service.ts`, query/mutation 옵션은 `query.ts`/`mutation.ts`로 나눴습니다.
+  - 컴포넌트와 페이지는 query hook을 통해 서버 상태만 사용하고, fetch 세부 구현에는 의존하지 않도록 했습니다.
+
+- **Mock API를 Route Handler로 구현**
+  - 프론트엔드 과제 범위에서 별도 서버 없이 API 스키마에 맞는 요청/응답을 검증할 수 있습니다.
+  - E2E 테스트도 실제 브라우저에서 같은 API 경로를 사용해 흐름을 검증합니다.
+
+- **이탈 방지 hook 분리**
+  - 입력 중인 draft가 있을 때 브라우저 뒤로가기 또는 창 닫기 상황을 구분해 처리했습니다.
+  - dirty 판단 로직, beforeunload, 뒤로가기 guard를 분리해 최종 hook은 조합만 담당하도록 구성했습니다.
+
+- **테스트는 사용자 플로우 중심으로 구성**
+  - 구현 세부 함수보다 실제 사용자가 밟는 흐름을 기준으로 E2E 테스트를 작성했습니다.
+  - 개인/단체 신청 성공, 입력 검증, 제출 실패, 새로고침 복구, 단계 이동 데이터 유지 등을 검증합니다.
+
+## 미구현 / 제약사항
+
+- 인증/인가와 결제 연동은 요구사항 범위 밖이므로 구현하지 않았습니다.
+
+- mock API는 서버 재시작 시 상태가 초기화됩니다.
+  - 중복 신청 판단은 메모리의 `Set`으로 관리하므로 실제 서비스처럼 영구 저장되지 않습니다.
+
+- 강의 목록 조회 실패 UI는 구현되어 있지만, 실제 네트워크 실패를 강제로 발생시키는 별도 UI 제어는 없습니다.
+  - 필요 시 Playwright route mocking으로 실패 케이스를 추가 검증할 수 있습니다.
+
+- 제출 실패 중 `INVALID_INPUT`은 mock API와 에러 메시지 매핑은 준비되어 있지만, 일반 사용 흐름에서는 클라이언트 폼 검증이 먼저 막기 때문에 E2E 우선순위에서는 제외했습니다.
+
+- 브라우저 이탈 방지는 브라우저 정책의 영향을 받습니다.
+  - 창 닫기/새로고침 confirm 문구는 브라우저가 기본 문구로 표시하며, 커스텀 문구를 강제할 수 없습니다.
+
+- 실제 운영 환경 수준의 접근성 점검, 성능 측정, 다국어 처리는 별도로 수행하지 않았습니다.
+
+## AI 활용 범위
+
+AI는 구현을 대신 맡기는 방식이 아니라, 과제 요구사항을 구조화하고 선택지를 비교하는 협업 도구로 활용했습니다.
+
+- 요구사항을 단계별 구현 계획으로 나누고 우선순위를 정리했습니다.
+- Next.js, TanStack Query, Zustand, React Hook Form, Zod를 어떤 책임으로 나눌지 비교하고 설계 방향을 정했습니다.
+- 폴더 구조, store 분리 기준, service/query 분리 기준처럼 프로젝트 구조 설계에 활용했습니다.
+- 반복되는 UI와 hook 구조를 리팩토링할 때 대안을 검토하고, 현재 코드 구조에 맞는 분리 단위를 정했습니다.
+- E2E 테스트 후보를 요구사항 기준으로 정리하고, 사용자 플로우 중심으로 테스트 케이스를 확장했습니다.
+- 코드 작성 후에는 lint, format, E2E 관점에서 누락된 부분을 점검하는 보조 역할로 활용했습니다.
+
+최종 구현에서는 프로젝트 요구사항과 실제 코드 구조를 기준으로 직접 판단해 반영했으며, AI 제안은 필요한 경우 수정하거나 제외했습니다.
