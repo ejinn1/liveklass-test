@@ -18,6 +18,7 @@ export function CourseCard({ course, selected, onSelect }: CourseCardProps) {
   return (
     <button
       type="button"
+      aria-label={`${course.title} 강의 선택`}
       disabled={!status.selectable}
       onClick={handleSelect}
       className={cn(
