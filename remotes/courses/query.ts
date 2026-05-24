@@ -13,5 +13,6 @@ export function courseListQueryOptions(category?: CourseCategory) {
   return queryOptions({
     queryKey: courseQueryKeys.list(category),
     queryFn: () => getCourses(category),
+    staleTime: 1000 * 60 * 5,
   });
 }
