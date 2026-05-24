@@ -15,6 +15,7 @@ export function ReviewGroupSection({ group, onEdit }: ReviewGroupSectionProps) {
         </h2>
         <button
           type="button"
+          aria-label="단체 신청 정보 수정"
           onClick={onEdit}
           className="cursor-pointer text-sm font-semibold text-zinc-700 underline-offset-4 hover:underline"
         >

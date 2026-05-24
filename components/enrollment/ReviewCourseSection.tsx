@@ -20,6 +20,7 @@ export function ReviewCourseSection({
         <h2 className="text-base font-semibold text-zinc-950">강의 정보</h2>
         <button
           type="button"
+          aria-label="강의 정보 수정"
           onClick={onEdit}
           className="cursor-pointer text-sm font-semibold text-zinc-700 underline-offset-4 hover:underline"
         >
