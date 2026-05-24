@@ -1,18 +1,11 @@
-import { expect, type Page, test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
-async function selectCourse(page: Page) {
-  const courseCard = page.getByRole("button", {
-    name: "Next.js 실전 앱 라우터 강의 선택",
-  });
-
-  await expect(courseCard).toBeVisible();
-  await courseCard.click();
-}
+import { selectCourse } from "./helpers/course";
 
 test("단체 신청 수강 신청을 완료한다", async ({ page }) => {
   await page.goto("/");
 
-  await selectCourse(page);
+  await selectCourse(page, "Next.js 실전 앱 라우터");
   await page.getByRole("button", { name: "단체 신청" }).click();
   await page.getByRole("button", { name: "다음 단계" }).click();
 
@@ -46,7 +39,7 @@ test("단체 신청 수강 신청을 완료한다", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: "신청 내용을 확인하세요" }),
   ).toBeVisible();
-  await expect(page.getByText("단체 신청")).toBeVisible();
+  await expect(page.getByText("단체 신청", { exact: true })).toBeVisible();
   await expect(page.getByText("라이브클래스 팀")).toBeVisible();
   await expect(page.getByText("2명")).toBeVisible();
   await expect(page.getByText("이서연")).toBeVisible();

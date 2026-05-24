@@ -1,17 +1,11 @@
 import { expect, test } from "@playwright/test";
 
+import { selectCourse } from "./helpers/course";
+
 test("개인 신청 수강 신청을 완료한다", async ({ page }) => {
-  const courseListResponse = page.waitForResponse(
-    (response) =>
-      response.url().includes("/api/courses") && response.status() === 200,
-  );
-
   await page.goto("/");
-  await courseListResponse;
 
-  await page
-    .getByRole("button", { name: "Next.js 실전 앱 라우터 강의 선택" })
-    .click();
+  await selectCourse(page, "Next.js 실전 앱 라우터");
   await page.getByRole("button", { name: "개인 신청" }).click();
   await page.getByRole("button", { name: "다음 단계" }).click();
 
