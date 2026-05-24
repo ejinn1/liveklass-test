@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { Skeleton } from "@/components/common/Skeleton";
 import { EnrollmentCompleteView } from "@/components/enrollment/EnrollmentCompleteView";
 import { EnrollmentStepActions } from "@/components/enrollment/EnrollmentStepActions";
 import { EnrollmentStepHeader } from "@/components/enrollment/EnrollmentStepHeader";
@@ -27,7 +28,10 @@ export default function ReviewPage() {
   } = useReviewStepNavigation();
   const { applicant, enrollmentType, group, hasHydrated, selectedCourseId } =
     useEnrollmentFormStore();
-  const { selectedCourse } = useReviewSelectedCourse({ selectedCourseId });
+  const { loading: isSelectedCourseLoading, selectedCourse } =
+    useReviewSelectedCourse({
+      selectedCourseId,
+    });
   const {
     handleRetryClick,
     handleSubmit,
@@ -56,7 +60,7 @@ export default function ReviewPage() {
     return <EnrollmentCompleteView submittedEnrollment={submittedEnrollment} />;
   }
 
-  if (!selectedCourse || !enrollmentType) {
+  if (!enrollmentType) {
     return null;
   }
 
@@ -72,43 +76,59 @@ export default function ReviewPage() {
         description="제출 전 강의와 신청 정보를 확인하고 필요한 경우 이전 단계에서 수정할 수 있습니다."
       />
 
-      <div className="space-y-5">
-        <ReviewCourseSection
-          enrollmentType={enrollmentType}
-          onEdit={handleCourseEditClick}
-          selectedCourse={selectedCourse}
-        />
-
-        <ReviewApplicantSection
-          applicant={applicant}
-          onEdit={handleApplicantEditClick}
-        />
-
-        {enrollmentType === "group" ? (
-          <ReviewGroupSection group={group} onEdit={handleApplicantEditClick} />
-        ) : null}
-      </div>
-
-      <ReviewTermsAgreement
-        agreedToTerms={agreedToTerms}
-        onChange={handleTermsChange}
-      />
-
-      {submitError ? (
-        <ReviewSubmitError
-          disabled={!agreedToTerms || isSubmitting}
-          isSubmitting={isSubmitting}
-          onRetry={handleRetryClick}
-          submitError={submitError}
-        />
+      {isSelectedCourseLoading ? (
+        <div className="rounded-lg border border-zinc-200 bg-white p-5">
+          <Skeleton className="h-5 w-24" />
+          <Skeleton className="mt-5 h-4 w-full" />
+          <Skeleton className="mt-3 h-4 w-2/3" />
+          <Skeleton className="mt-3 h-4 w-1/2" />
+        </div>
       ) : null}
 
-      <EnrollmentStepActions
-        nextDisabled={!agreedToTerms || isSubmitting}
-        nextLabel={isSubmitting ? "제출 중" : "제출하기"}
-        onNext={handleSubmit}
-        onPrevious={handlePreviousClick}
-      />
+      {!isSelectedCourseLoading && selectedCourse ? (
+        <>
+          <div className="space-y-5">
+            <ReviewCourseSection
+              enrollmentType={enrollmentType}
+              onEdit={handleCourseEditClick}
+              selectedCourse={selectedCourse}
+            />
+
+            <ReviewApplicantSection
+              applicant={applicant}
+              onEdit={handleApplicantEditClick}
+            />
+
+            {enrollmentType === "group" ? (
+              <ReviewGroupSection
+                group={group}
+                onEdit={handleApplicantEditClick}
+              />
+            ) : null}
+          </div>
+
+          <ReviewTermsAgreement
+            agreedToTerms={agreedToTerms}
+            onChange={handleTermsChange}
+          />
+
+          {submitError ? (
+            <ReviewSubmitError
+              disabled={!agreedToTerms || isSubmitting}
+              isSubmitting={isSubmitting}
+              onRetry={handleRetryClick}
+              submitError={submitError}
+            />
+          ) : null}
+
+          <EnrollmentStepActions
+            nextDisabled={!agreedToTerms || isSubmitting}
+            nextLabel={isSubmitting ? "제출 중" : "제출하기"}
+            onNext={handleSubmit}
+            onPrevious={handlePreviousClick}
+          />
+        </>
+      ) : null}
     </section>
   );
 }
