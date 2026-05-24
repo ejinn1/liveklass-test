@@ -43,6 +43,7 @@ export function useApplicantStepForm({
           },
     mode: "onBlur",
     resolver: zodResolver(applicantStepSchema),
+    shouldFocusError: false,
   });
   const { control, reset } = form;
 

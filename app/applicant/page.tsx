@@ -17,8 +17,12 @@ import { useEnrollmentFormStore } from "@/stores/enrollmentFormStore";
 export default function ApplicantPage() {
   useEnrollmentNavigationGuard();
 
-  const { currentStep, handlePreviousClick, handleValidSubmit } =
-    useApplicantStepNavigation();
+  const {
+    currentStep,
+    handleInvalidSubmit,
+    handlePreviousClick,
+    handleValidSubmit,
+  } = useApplicantStepNavigation();
   const { applicant, enrollmentType, group, hasHydrated, selectedCourseId } =
     useEnrollmentFormStore();
   useApplicantStepAccessGuard({ enrollmentType, selectedCourseId });
@@ -46,7 +50,7 @@ export default function ApplicantPage() {
 
   return (
     <form
-      onSubmit={handleSubmit(handleValidSubmit)}
+      onSubmit={handleSubmit(handleValidSubmit, handleInvalidSubmit)}
       className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-5 py-8 sm:px-8 lg:px-10"
     >
       <EnrollmentStepHeader
